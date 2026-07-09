@@ -75,7 +75,7 @@ export default function ClientsPage() {
               <p className="text-sm text-gray-500">{c.city} {c.email && `· ${c.email}`}</p>
             </div>
             <button className="text-sm text-blue-600 underline"
-              onClick={() => { setEditingId(c.id); setForm({ ...EMPTY, ...c }); }}>
+              onClick={() => { setEditingId(c.id); const { id: _id, org_id: _orgId, ...rest } = c; setForm(rest); }}>
               Modifier
             </button>
           </li>
