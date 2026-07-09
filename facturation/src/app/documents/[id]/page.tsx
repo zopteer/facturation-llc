@@ -2,6 +2,7 @@
 import { use, useCallback, useEffect, useRef, useState } from 'react';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { computeTotals, formatCents } from '@/lib/money';
+import { PdfExportButton } from '@/components/PdfExportButton';
 import type { ClientRow, DocumentLineRow, DocumentRow } from '@/lib/types';
 
 export default function DocumentEditor({ params }: { params: Promise<{ id: string }> }) {
@@ -90,9 +91,12 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
         <h1 className="text-2xl font-bold">
           {doc.type === 'facture' ? 'Facture' : 'Devis'} {doc.numero ?? '(brouillon)'}
         </h1>
-        <span className={saveError ? 'text-sm text-red-600' : 'text-sm text-gray-500'}>
-          {saving ? 'Enregistrement…' : saveError ? "Erreur d'enregistrement" : 'Enregistré'}
-        </span>
+        <div className="flex items-center gap-4">
+          <span className={saveError ? 'text-sm text-red-600' : 'text-sm text-gray-500'}>
+            {saving ? 'Enregistrement…' : saveError ? "Erreur d'enregistrement" : 'Enregistré'}
+          </span>
+          <PdfExportButton doc={doc} lines={lines} />
+        </div>
       </div>
       {readOnly && (
         <p className="rounded bg-yellow-50 p-2 text-sm text-yellow-800">
