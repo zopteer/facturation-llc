@@ -41,6 +41,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <main className="flex-1 p-4 pb-20 md:pb-4">{children}</main>
       <nav className="fixed bottom-0 left-0 right-0 flex justify-around border-t bg-white p-2 md:hidden">
         {links}
+        <button onClick={logout} className="rounded px-3 py-2 text-sm text-gray-500 hover:bg-gray-100">
+          Déconnexion
+        </button>
       </nav>
     </div>
   );
