@@ -10,7 +10,9 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
   const [lines, setLines] = useState<DocumentLineRow[]>([]);
   const [clients, setClients] = useState<ClientRow[]>([]);
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const saveChain = useRef<Promise<void>>(Promise.resolve());
 
   useEffect(() => {
     const supabase = createBrowserSupabase();
@@ -22,18 +24,31 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
       .then(({ data }) => setClients(data ?? []));
   }, [id]);
 
+  useEffect(() => {
+    return () => {
+      if (timer.current) clearTimeout(timer.current);
+    };
+  }, []);
+
   const scheduleSave = useCallback((nextDoc: DocumentRow, nextLines: DocumentLineRow[]) => {
     if (timer.current) clearTimeout(timer.current);
-    timer.current = setTimeout(async () => {
-      setSaving(true);
-      const supabase = createBrowserSupabase();
-      const { id: _id, created_at: _c, ...docFields } = nextDoc;
-      await supabase.from('documents').update(docFields).eq('id', nextDoc.id);
-      for (const line of nextLines) {
-        const { id: lineId, ...lineFields } = line;
-        await supabase.from('document_lines').update(lineFields).eq('id', lineId);
-      }
-      setSaving(false);
+    timer.current = setTimeout(() => {
+      const doSave = async () => {
+        setSaving(true);
+        let hadError = false;
+        const supabase = createBrowserSupabase();
+        const { id: _id, created_at: _c, ...docFields } = nextDoc;
+        const { error: docError } = await supabase.from('documents').update(docFields).eq('id', nextDoc.id);
+        if (docError) hadError = true;
+        for (const line of nextLines) {
+          const { id: lineId, ...lineFields } = line;
+          const { error: lineError } = await supabase.from('document_lines').update(lineFields).eq('id', lineId);
+          if (lineError) hadError = true;
+        }
+        setSaveError(hadError);
+        setSaving(false);
+      };
+      saveChain.current = saveChain.current.then(doSave);
     }, 1000);
   }, []);
 
@@ -75,7 +90,9 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
         <h1 className="text-2xl font-bold">
           {doc.type === 'facture' ? 'Facture' : 'Devis'} {doc.numero ?? '(brouillon)'}
         </h1>
-        <span className="text-sm text-gray-500">{saving ? 'Enregistrement…' : 'Enregistré'}</span>
+        <span className={saveError ? 'text-sm text-red-600' : 'text-sm text-gray-500'}>
+          {saving ? 'Enregistrement…' : saveError ? "Erreur d'enregistrement" : 'Enregistré'}
+        </span>
       </div>
       {readOnly && (
         <p className="rounded bg-yellow-50 p-2 text-sm text-yellow-800">
