@@ -6,8 +6,12 @@ import type { DocumentLineRow, DocumentRow, SettingsRow } from '@/lib/types';
 
 export function PdfExportButton({ doc, lines }: { doc: DocumentRow; lines: DocumentLineRow[] }) {
   async function download() {
-    const { data: settings } = await createBrowserSupabase()
+    const { data: settings, error } = await createBrowserSupabase()
       .from('settings').select('*').eq('org_id', doc.org_id).single();
+    if (error || !settings) {
+      alert('Impossible de charger les réglages — PDF non généré.');
+      return;
+    }
     const blob = await pdf(
       <DocumentPdf doc={doc} lines={lines} settings={settings as SettingsRow} />,
     ).toBlob();
