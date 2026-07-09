@@ -1,0 +1,5 @@
+# Réglages locaux Claude Code (propres à cette machine)
+.claude/settings.local.json
+
+# Sortie générée par graphify
+graphify-out/
