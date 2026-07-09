@@ -20,11 +20,14 @@ export async function sendDocument(docId: string): Promise<void> {
     .select('*').eq('id', docId).single();
   if (!doc || doc.status !== 'brouillon') return;
   const year = new Date().getFullYear();
-  const { data: last } = await supabase.from('documents')
+  const { data: rows } = await supabase.from('documents')
     .select('numero').eq('org_id', doc.org_id).eq('type', doc.type)
-    .not('numero', 'is', null).like('numero', `${year}-%`)
-    .order('numero', { ascending: false }).limit(1).maybeSingle();
-  const numero = nextDocumentNumber(last?.numero ?? null, year);
+    .not('numero', 'is', null).like('numero', `${year}-%`);
+  const last = (rows ?? [])
+    .map((r) => r.numero as string)
+    .sort((a, b) => Number(a.split('-')[1]) - Number(b.split('-')[1]))
+    .pop() ?? null;
+  const numero = nextDocumentNumber(last, year);
   const { error } = await supabase.from('documents')
     .update({ numero, status: 'envoyee' }).eq('id', docId);
   if (error) throw error; // collision d'index unique : réessayer
@@ -43,8 +46,9 @@ export async function convertQuote(quoteId: string): Promise<string> {
   const { data: lines } = await supabase.from('document_lines')
     .select('label, quantity, unit_price_cents, position').eq('document_id', quoteId);
   if (lines?.length) {
-    await supabase.from('document_lines')
+    const { error: lineError } = await supabase.from('document_lines')
       .insert(lines.map((l) => ({ ...l, document_id: invoice.id })));
+    if (lineError) throw lineError;
   }
   return invoice.id;
 }
