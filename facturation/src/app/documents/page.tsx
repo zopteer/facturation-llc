@@ -42,7 +42,7 @@ export default function DocumentsPage() {
 
   async function remove(id: string) {
     if (!confirm('Supprimer ce brouillon ?')) return;
-    await createBrowserSupabase().from('documents').delete().eq('id', id);
+    await createBrowserSupabase().from('documents').delete().eq('id', id).eq('status', 'brouillon');
     load();
   }
 
@@ -87,7 +87,8 @@ export default function DocumentsPage() {
             <span className="flex gap-2 text-sm">
               {d.status === 'brouillon' && (
                 <>
-                  <button className="text-blue-600 underline" onClick={() => sendDocument(d.id).then(load)}>
+                  <button className="text-blue-600 underline"
+                    onClick={() => sendDocument(d.id).then(load).catch(() => alert('Échec de l\'envoi — réessayez.'))}>
                     Marquer envoyée
                   </button>
                   <button className="text-red-600 underline" onClick={() => remove(d.id)}>Supprimer</button>

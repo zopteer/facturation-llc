@@ -9,8 +9,9 @@ export async function createDraft(orgId: string, type: DocumentType): Promise<st
     .insert({ org_id: orgId, type })
     .select('id').single();
   if (error) throw error;
-  await supabase.from('document_lines')
+  const { error: lineError } = await supabase.from('document_lines')
     .insert({ document_id: data.id, position: 0 });
+  if (lineError) throw lineError;
   return data.id;
 }
 
@@ -20,17 +21,23 @@ export async function sendDocument(docId: string): Promise<void> {
     .select('*').eq('id', docId).single();
   if (!doc || doc.status !== 'brouillon') return;
   const year = new Date().getFullYear();
-  const { data: rows } = await supabase.from('documents')
-    .select('numero').eq('org_id', doc.org_id).eq('type', doc.type)
-    .not('numero', 'is', null).like('numero', `${year}-%`);
-  const last = (rows ?? [])
-    .map((r) => r.numero as string)
-    .sort((a, b) => Number(a.split('-')[1]) - Number(b.split('-')[1]))
-    .pop() ?? null;
-  const numero = nextDocumentNumber(last, year);
-  const { error } = await supabase.from('documents')
-    .update({ numero, status: 'envoyee' }).eq('id', docId);
-  if (error) throw error; // collision d'index unique : réessayer
+
+  const maxAttempts = 3;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const { data: rows } = await supabase.from('documents')
+      .select('numero').eq('org_id', doc.org_id).eq('type', doc.type)
+      .not('numero', 'is', null).like('numero', `${year}-%`);
+    const last = (rows ?? [])
+      .map((r) => r.numero as string)
+      .sort((a, b) => Number(a.split('-')[1]) - Number(b.split('-')[1]))
+      .pop() ?? null;
+    const numero = nextDocumentNumber(last, year);
+    const { error } = await supabase.from('documents')
+      .update({ numero, status: 'envoyee' }).eq('id', docId);
+    if (!error) return;
+    if (error.code !== '23505' || attempt === maxAttempts) throw error;
+    // collision d'index unique : renuméroter et réessayer
+  }
 }
 
 export async function convertQuote(quoteId: string): Promise<string> {

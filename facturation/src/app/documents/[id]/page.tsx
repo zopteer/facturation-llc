@@ -38,8 +38,16 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
         setSaving(true);
         let hadError = false;
         const supabase = createBrowserSupabase();
-        const { id: _id, created_at: _c, ...docFields } = nextDoc;
-        const { error: docError } = await supabase.from('documents').update(docFields).eq('id', nextDoc.id);
+        const {
+          client_id, client_snapshot, issue_date, due_date, due_on_receipt,
+          currency, vat_rate, vat_na, payment_cheque, payment_transfer, footer,
+        } = nextDoc;
+        const docFields = {
+          client_id, client_snapshot, issue_date, due_date, due_on_receipt,
+          currency, vat_rate, vat_na, payment_cheque, payment_transfer, footer,
+        };
+        const { error: docError } = await supabase.from('documents').update(docFields)
+          .eq('id', nextDoc.id).eq('status', 'brouillon');
         if (docError) hadError = true;
         for (const line of nextLines) {
           const { id: lineId, ...lineFields } = line;
