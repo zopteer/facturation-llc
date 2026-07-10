@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createBrowserSupabase } from '@/lib/supabase/client';
+import { PasswordField } from '@/components/PasswordField';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -28,8 +29,7 @@ export default function LoginPage() {
         <form onSubmit={submit} className="space-y-5">
           <input className="field" type="email" placeholder="Email"
             value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input className="field" type="password" placeholder="Mot de passe"
-            value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <PasswordField placeholder="Mot de passe" value={password} onChange={setPassword} />
           {error && <p className="text-sm text-margin">{error}</p>}
           <button className="btn-primary w-full">Connexion</button>
         </form>

@@ -2,6 +2,7 @@
 import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createBrowserSupabase } from '@/lib/supabase/client';
+import { PasswordField } from '@/components/PasswordField';
 
 function SignupForm() {
   const router = useRouter();
@@ -39,8 +40,8 @@ function SignupForm() {
           )}
           <input className="field" type="email" placeholder="Email"
             value={email} onChange={(e) => setEmail(e.target.value)} required />
-          <input className="field" type="password" placeholder="Mot de passe (8+ caractères)"
-            value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} />
+          <PasswordField placeholder="Mot de passe (8+ caractères)" value={password}
+            onChange={setPassword} minLength={8} />
           {error && <p className="text-sm text-margin">{error}</p>}
           <button className="btn-primary w-full">Créer le compte</button>
         </form>
