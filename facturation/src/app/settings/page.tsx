@@ -28,7 +28,7 @@ export default function SettingsPage() {
       .then(({ data }) => setSettings(data));
   }, [orgId]);
 
-  if (!settings) return <p>Chargement…</p>;
+  if (!settings) return <p className="text-sepia">Chargement…</p>;
 
   async function save(e: React.FormEvent) {
     e.preventDefault();
@@ -47,30 +47,39 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-xl">
-      <h1 className="mb-6 text-2xl font-bold">Réglages</h1>
-      <form onSubmit={save} className="space-y-3">
+      <h1 className="font-display mb-8 text-3xl">Réglages</h1>
+      <form onSubmit={save} className="card space-y-4 p-5">
+        <p className="eyebrow">Mes informations</p>
         {FIELDS.map(({ key, label }) => (
-          <label key={key} className="block text-sm">
+          <label key={key} className="block text-sm text-sepia">
             {label}
-            <input className="mt-1 w-full rounded border p-2"
+            <input className={`field mt-1 ${key === 'iban' || key === 'bic' ? 'amount' : ''}`}
               value={String(settings[key] ?? '')}
               onChange={(e) => setSettings({ ...settings, [key]: e.target.value })} />
           </label>
         ))}
         <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={settings.late_penalty_enabled}
+          <input type="checkbox" className="accent-ledger" checked={settings.late_penalty_enabled}
             onChange={(e) => setSettings({ ...settings, late_penalty_enabled: e.target.checked })} />
           Afficher la mention de pénalités de retard sur les factures
         </label>
-        <button className="rounded bg-blue-600 px-4 py-2 text-white">Enregistrer</button>
-        {saved && <span className="ml-3 text-sm text-green-600">Enregistré ✓</span>}
+        <div>
+          <button className="btn-primary">Enregistrer</button>
+          {saved && <span className="ml-3 text-sm text-ledger">Enregistré ✓</span>}
+        </div>
       </form>
 
-      <h2 className="mt-10 mb-2 text-lg font-semibold">Inviter un membre</h2>
-      <button onClick={invite} className="rounded border px-4 py-2 text-sm">
-        Générer un lien d'invitation
-      </button>
-      {inviteUrl && <p className="mt-2 break-all rounded bg-gray-100 p-2 text-sm">{inviteUrl}</p>}
+      <div className="card mt-8 p-5">
+        <p className="eyebrow mb-3">Inviter un membre</p>
+        <button onClick={invite} className="btn-ghost">
+          Générer un lien d'invitation
+        </button>
+        {inviteUrl && (
+          <p className="amount mt-3 break-all border-l-2 border-l-margin bg-paper p-3 text-xs">
+            {inviteUrl}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

@@ -46,41 +46,46 @@ export default function ClientsPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="mb-6 text-2xl font-bold">Clients</h1>
-      <form onSubmit={save} className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <h1 className="font-display mb-8 text-3xl">Clients</h1>
+      <form onSubmit={save} className="card mb-8 grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
+        <p className="eyebrow sm:col-span-2">
+          {editingId ? 'Modifier le client' : 'Nouveau client'}
+        </p>
         {FIELDS.map(({ key, label }) => (
-          <label key={key} className="block text-sm">
+          <label key={key} className="block text-sm text-sepia">
             {label}
-            <input className="mt-1 w-full rounded border p-2" value={form[key]}
+            <input className="field mt-1" value={form[key]}
               onChange={(e) => setForm({ ...form, [key]: e.target.value })} />
           </label>
         ))}
         <div className="sm:col-span-2">
-          <button className="rounded bg-blue-600 px-4 py-2 text-white">
+          <button className="btn-primary">
             {editingId ? 'Modifier' : 'Ajouter'} le client
           </button>
           {editingId && (
-            <button type="button" className="ml-2 text-sm text-gray-500 underline"
+            <button type="button" className="link ml-3 text-sm"
               onClick={() => { setForm(EMPTY); setEditingId(null); }}>
               Annuler
             </button>
           )}
         </div>
       </form>
-      <ul className="divide-y rounded border">
+      <ul className="card divide-y divide-line">
         {clients.map((c) => (
-          <li key={c.id} className="flex items-center justify-between p-3">
+          <li key={c.id} className="flex items-center justify-between p-4">
             <div>
               <p className="font-medium">{c.company || `${c.first_name} ${c.last_name}`}</p>
-              <p className="text-sm text-gray-500">{c.city} {c.email && `· ${c.email}`}</p>
+              <p className="text-sm text-sepia">{c.city} {c.email && `· ${c.email}`}</p>
             </div>
-            <button className="text-sm text-blue-600 underline"
+            <button className="link text-sm"
               onClick={() => { setEditingId(c.id); const { id: _id, org_id: _orgId, ...rest } = c; setForm(rest); }}>
               Modifier
             </button>
           </li>
         ))}
-        {clients.length === 0 && <li className="p-3 text-sm text-gray-500">Aucun client pour l'instant.</li>}
+        {clients.length === 0 && (
+          <li className="p-4 text-sm text-sepia">Aucun client pour l'instant — ajoutez-en un ci-dessus.</li>
+        )}
       </ul>
     </div>
   );

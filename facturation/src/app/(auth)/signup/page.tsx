@@ -26,21 +26,25 @@ function SignupForm() {
 
   return (
     <main className="mx-auto mt-16 max-w-sm p-4">
-      <h1 className="mb-6 text-2xl font-bold">
-        {invite ? 'Rejoindre l’organisation' : 'Créer un compte'}
-      </h1>
-      <form onSubmit={submit} className="space-y-4">
-        {!invite && (
-          <input className="w-full rounded border p-2" placeholder="Nom de la société"
-            value={orgName} onChange={(e) => setOrgName(e.target.value)} required />
-        )}
-        <input className="w-full rounded border p-2" type="email" placeholder="Email"
-          value={email} onChange={(e) => setEmail(e.target.value)} required />
-        <input className="w-full rounded border p-2" type="password" placeholder="Mot de passe (8+ caractères)"
-          value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} />
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        <button className="w-full rounded bg-blue-600 p-2 text-white">Créer le compte</button>
-      </form>
+      <p className="font-display text-center text-3xl">Facturation</p>
+      <p className="eyebrow mb-8 mt-2 text-center">Registre des ventes</p>
+      <div className="card p-6">
+        <h1 className="font-display mb-6 text-xl">
+          {invite ? 'Rejoindre l’organisation' : 'Créer un compte'}
+        </h1>
+        <form onSubmit={submit} className="space-y-5">
+          {!invite && (
+            <input className="field" placeholder="Nom de la société"
+              value={orgName} onChange={(e) => setOrgName(e.target.value)} required />
+          )}
+          <input className="field" type="email" placeholder="Email"
+            value={email} onChange={(e) => setEmail(e.target.value)} required />
+          <input className="field" type="password" placeholder="Mot de passe (8+ caractères)"
+            value={password} onChange={(e) => setPassword(e.target.value)} required minLength={8} />
+          {error && <p className="text-sm text-margin">{error}</p>}
+          <button className="btn-primary w-full">Créer le compte</button>
+        </form>
+      </div>
     </main>
   );
 }

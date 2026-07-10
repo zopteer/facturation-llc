@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { useOrg } from '@/lib/useOrg';
 import { computeTotals, formatCents, type Currency } from '@/lib/money';
+import { STATUS_LABELS, stampClass } from '@/lib/labels';
 import type { DocumentLineRow, DocumentRow } from '@/lib/types';
 
 export default function Dashboard() {
@@ -33,27 +34,33 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="mb-6 text-2xl font-bold">Tableau de bord</h1>
-      <div className="mb-8 rounded border p-4">
-        <p className="text-sm text-gray-500">Impayés</p>
-        <p className="text-2xl font-bold">
+      <h1 className="font-display mb-8 text-3xl">Tableau de bord</h1>
+      <div className="card mb-8 p-5">
+        <p className="eyebrow mb-2">Impayés</p>
+        <p className="amount text-3xl">
           {formatCents(unpaidByCurrency.EUR, 'EUR')}
           {unpaidByCurrency.USD > 0 && <> + {formatCents(unpaidByCurrency.USD, 'USD')}</>}
         </p>
       </div>
-      <h2 className="mb-2 font-semibold">Derniers documents</h2>
-      <ul className="divide-y rounded border">
+      <p className="eyebrow mb-3">Derniers documents</p>
+      <ul className="card divide-y divide-line">
         {recent.map((d) => (
-          <li key={d.id} className="p-3">
-            <Link href={`/documents/${d.id}`} className="text-blue-700 hover:underline">
-              {d.type === 'facture' ? 'Facture' : 'Devis'} {d.numero ?? '(brouillon)'} — {d.status}
+          <li key={d.id} className="flex items-center justify-between gap-3 p-4">
+            <Link href={`/documents/${d.id}`} className="link">
+              {d.type === 'facture' ? 'Facture' : 'Devis'}{' '}
+              <span className="amount">{d.numero ?? '(brouillon)'}</span>
             </Link>
+            <span className={stampClass(d.status)}>{STATUS_LABELS[d.status]}</span>
           </li>
         ))}
-        {recent.length === 0 && <li className="p-3 text-sm text-gray-500">Aucun document.</li>}
+        {recent.length === 0 && (
+          <li className="p-4 text-sm text-sepia">
+            Aucun document pour l’instant — créez votre première facture.
+          </li>
+        )}
       </ul>
-      <div className="mt-6 flex gap-2">
-        <Link href="/documents" className="rounded bg-blue-600 px-4 py-2 text-sm text-white">
+      <div className="mt-6">
+        <Link href="/documents" className="btn-primary inline-block">
           Voir tous les documents
         </Link>
       </div>

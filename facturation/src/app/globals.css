@@ -1,26 +1,161 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --paper: #f6f1e7;
+  --sheet: #fcf9f1;
+  --ink: #2b2a26;
+  --sepia: #6e5f4b;
+  --line: #e2d8c3;
+  --ledger: #33523f;
+  --ledger-deep: #2a4334;
+  --margin-red: #c05a47;
+  --ink-blue: #3a5578;
+  --faded: #9a8f7c;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-paper: var(--paper);
+  --color-sheet: var(--sheet);
+  --color-ink: var(--ink);
+  --color-sepia: var(--sepia);
+  --color-line: var(--line);
+  --color-ledger: var(--ledger);
+  --color-ledger-deep: var(--ledger-deep);
+  --color-margin: var(--margin-red);
+  --color-inkblue: var(--ink-blue);
+  --color-faded: var(--faded);
+  --font-sans: var(--font-archivo);
+  --font-mono: var(--font-plex-mono);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-archivo), ui-sans-serif, sans-serif;
+}
+
+.font-display {
+  font-family: var(--font-fraunces), Georgia, serif;
+}
+
+/* Feuille de papier : cartes et sections */
+.card {
+  background: var(--sheet);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(43, 42, 38, 0.07);
+}
+
+/* Petit libellé de section, façon en-tête de registre */
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--sepia);
+}
+
+/* Champs soulignés, comme un formulaire papier */
+.field {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  padding: 6px 2px;
+  color: var(--ink);
+  font-size: 14px;
+}
+.field:focus {
+  outline: none;
+  border-bottom-color: var(--ink);
+}
+.field::placeholder {
+  color: var(--faded);
+}
+.field:disabled {
+  color: var(--faded);
+  border-bottom-style: dashed;
+}
+
+.btn-primary {
+  background: var(--ledger);
+  color: var(--sheet);
+  border-radius: 3px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  background: var(--ledger-deep);
+}
+
+.btn-ghost {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--ink);
+  border-radius: 3px;
+  padding: 8px 18px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.btn-ghost:hover {
+  background: var(--sheet);
+  border-color: var(--sepia);
+}
+
+/* Statuts en tampon encreur */
+.stamp {
+  display: inline-block;
+  font-family: var(--font-plex-mono), monospace;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  border: 1.5px solid currentColor;
+  border-radius: 3px;
+  padding: 2px 8px;
+  transform: rotate(-2deg);
+  white-space: nowrap;
+}
+.stamp-payee { color: var(--ledger); }
+.stamp-impayee { color: var(--margin-red); }
+.stamp-envoyee { color: var(--ink-blue); }
+.stamp-brouillon { color: var(--sepia); border-style: dashed; transform: none; }
+.stamp-annulee { color: var(--faded); text-decoration: line-through; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .stamp { transform: none; }
+}
+
+/* Montants et numéros : chiffres tabulaires de registre */
+.amount {
+  font-family: var(--font-plex-mono), monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tableau des produits : marge rouge de registre comptable */
+.ledger {
+  border-left: 2px solid var(--margin-red);
+  padding-left: 12px;
+}
+.ledger-row {
+  border-bottom: 1px solid var(--line);
+}
+
+.link {
+  color: var(--ledger);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--line);
+}
+.link:hover {
+  text-decoration-color: var(--ledger);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ink-blue);
+  outline-offset: 2px;
 }
