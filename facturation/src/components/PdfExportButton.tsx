@@ -18,7 +18,7 @@ export function PdfExportButton({ doc, lines }: { doc: DocumentRow; lines: Docum
     const label = doc.type === 'facture' ? 'Facture' : 'Devis';
     const a = Object.assign(document.createElement('a'), {
       href: URL.createObjectURL(blob),
-      download: `${label}-${doc.numero ?? 'brouillon'}.pdf`,
+      download: `${label}-${doc.numero ?? doc.issue_date}.pdf`,
     });
     a.click();
     URL.revokeObjectURL(a.href);

@@ -3,7 +3,7 @@ import { use, useCallback, useEffect, useRef, useState } from 'react';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { computeTotals, formatCents } from '@/lib/money';
 import { PdfExportButton } from '@/components/PdfExportButton';
-import { STATUS_LABELS } from '@/lib/labels';
+import { STATUS_LABELS, documentName } from '@/lib/labels';
 import type { ClientRow, DocumentLineRow, DocumentRow } from '@/lib/types';
 
 export default function DocumentEditor({ params }: { params: Promise<{ id: string }> }) {
@@ -97,10 +97,7 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
   return (
     <div className="mx-auto max-w-4xl space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-display text-3xl">
-          {doc.type === 'facture' ? 'Facture' : 'Devis'}{' '}
-          <span className="amount text-2xl">{doc.numero ?? '(brouillon)'}</span>
-        </h1>
+        <h1 className="font-display text-3xl">{documentName(doc)}</h1>
         <div className="flex items-center gap-4">
           <span className={`text-sm ${saveError ? 'text-margin' : 'text-sepia'}`}>
             {saving ? 'Enregistrement…' : saveError ? "Erreur d'enregistrement" : 'Enregistré'}

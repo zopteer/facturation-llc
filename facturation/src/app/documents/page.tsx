@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { useOrg } from '@/lib/useOrg';
 import { convertQuote, createDraft, sendDocument } from '@/lib/documents';
-import { STATUS_LABELS, stampClass } from '@/lib/labels';
+import { STATUS_LABELS, documentName, stampClass } from '@/lib/labels';
 import type { DocumentRow, DocumentStatus, DocumentType } from '@/lib/types';
 
 export default function DocumentsPage() {
@@ -74,8 +74,7 @@ export default function DocumentsPage() {
         {docs.map((d) => (
           <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 p-4">
             <Link href={`/documents/${d.id}`} className="link min-w-40 font-medium">
-              {d.type === 'facture' ? 'Facture' : 'Devis'}{' '}
-              <span className="amount">{d.numero ?? '(brouillon)'}</span>
+              {documentName(d)}
             </Link>
             <span className="text-sm text-sepia">
               {(d.client_snapshot?.company as string) || '—'} · <span className="amount">{d.issue_date}</span>

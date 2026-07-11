@@ -7,6 +7,7 @@ export interface ClientRow {
   id: string;
   org_id: string;
   company: string;
+  company_id: string;          // SIRET / SIREN / EIN
   first_name: string;
   last_name: string;
   address: string;

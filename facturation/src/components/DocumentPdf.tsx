@@ -1,10 +1,11 @@
 import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { computeTotals, formatCents } from '@/lib/money';
+import { documentName, formatDateFr } from '@/lib/labels';
 import type { DocumentLineRow, DocumentRow, SettingsRow } from '@/lib/types';
 
 const s = StyleSheet.create({
-  page: { padding: 40, fontSize: 10, fontFamily: 'Helvetica' },
-  title: { fontSize: 18, marginBottom: 20, fontFamily: 'Helvetica-Bold' },
+  page: { paddingVertical: 64, paddingHorizontal: 70, fontSize: 10, fontFamily: 'Helvetica' },
+  title: { fontSize: 18, marginBottom: 24, fontFamily: 'Helvetica-Bold' },
   row: { flexDirection: 'row', justifyContent: 'space-between' },
   block: { width: '45%' },
   h2: { fontSize: 11, fontFamily: 'Helvetica-Bold', marginBottom: 4 },
@@ -25,12 +26,11 @@ export function DocumentPdf({ doc, lines, settings }: {
     lines.map((l) => ({ quantity: Number(l.quantity), unitPriceCents: l.unit_price_cents })),
     doc.vat_na ? 0 : Number(doc.vat_rate));
   const c = doc.client_snapshot;
-  const label = doc.type === 'facture' ? 'Facture' : 'Devis';
 
   return (
     <Document>
       <Page size="A4" style={s.page}>
-        <Text style={s.title}>{label} {doc.numero ?? '(brouillon)'}</Text>
+        <Text style={s.title}>{documentName(doc)}</Text>
         <View style={s.row}>
           <View style={s.block}>
             <Text style={s.h2}>{settings.company_name}</Text>
@@ -42,6 +42,7 @@ export function DocumentPdf({ doc, lines, settings }: {
           <View style={s.block}>
             <Text style={s.h2}>Client</Text>
             {c.company ? <Text>{c.company}</Text> : null}
+            {c.company_id ? <Text>{c.company_id}</Text> : null}
             <Text>{[c.first_name, c.last_name].filter(Boolean).join(' ')}</Text>
             <Text>{c.address}</Text>
             <Text>{[c.postal_code, c.city].filter(Boolean).join(' ')}</Text>
@@ -49,9 +50,9 @@ export function DocumentPdf({ doc, lines, settings }: {
           </View>
         </View>
         <View style={{ marginTop: 12 }}>
-          <Text>Date d'émission : {doc.issue_date}</Text>
+          <Text>Date d'émission : {formatDateFr(doc.issue_date)}</Text>
           <Text>
-            Échéance : {doc.due_on_receipt ? 'à réception' : (doc.due_date ?? '—')}
+            Échéance : {doc.due_on_receipt ? 'à réception' : (doc.due_date ? formatDateFr(doc.due_date) : '—')}
           </Text>
         </View>
 

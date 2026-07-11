@@ -5,12 +5,13 @@ import { useOrg } from '@/lib/useOrg';
 import type { ClientRow } from '@/lib/types';
 
 const EMPTY: Omit<ClientRow, 'id' | 'org_id'> = {
-  company: '', first_name: '', last_name: '', address: '',
+  company: '', company_id: '', first_name: '', last_name: '', address: '',
   postal_code: '', city: '', country: '', email: '',
 };
 
 const FIELDS: Array<{ key: keyof typeof EMPTY; label: string }> = [
-  { key: 'company', label: 'Société' }, { key: 'first_name', label: 'Prénom' },
+  { key: 'company', label: 'Société' }, { key: 'company_id', label: 'SIRET / SIREN / EIN' },
+  { key: 'first_name', label: 'Prénom' },
   { key: 'last_name', label: 'Nom' }, { key: 'address', label: 'Adresse' },
   { key: 'postal_code', label: 'Code postal' }, { key: 'city', label: 'Ville' },
   { key: 'country', label: 'Pays' }, { key: 'email', label: 'Email' },

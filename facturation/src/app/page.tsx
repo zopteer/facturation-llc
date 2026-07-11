@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { useOrg } from '@/lib/useOrg';
 import { computeTotals, formatCents, type Currency } from '@/lib/money';
-import { STATUS_LABELS, stampClass } from '@/lib/labels';
+import { STATUS_LABELS, documentName, stampClass } from '@/lib/labels';
 import type { DocumentLineRow, DocumentRow } from '@/lib/types';
 
 export default function Dashboard() {
@@ -47,8 +47,7 @@ export default function Dashboard() {
         {recent.map((d) => (
           <li key={d.id} className="flex items-center justify-between gap-3 p-4">
             <Link href={`/documents/${d.id}`} className="link">
-              {d.type === 'facture' ? 'Facture' : 'Devis'}{' '}
-              <span className="amount">{d.numero ?? '(brouillon)'}</span>
+              {documentName(d)}
             </Link>
             <span className={stampClass(d.status)}>{STATUS_LABELS[d.status]}</span>
           </li>
