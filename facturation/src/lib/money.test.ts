@@ -24,8 +24,8 @@ describe('computeTotals', () => {
 
 describe('formatCents', () => {
   it('formate en euros (fr-FR) et dollars (en-US)', () => {
-    expect(formatCents(123456, 'EUR')).toContain('1');
-    expect(formatCents(123456, 'EUR')).toContain('€');
+    expect(formatCents(123456, 'EUR')).toBe('1 234,56 €');
+    expect(formatCents(1593000, 'EUR')).toBe('15 930,00 €');
     expect(formatCents(123456, 'USD')).toBe('$1,234.56');
   });
 });

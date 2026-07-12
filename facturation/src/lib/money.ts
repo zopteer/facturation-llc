@@ -25,5 +25,9 @@ export function formatCents(cents: number, currency: Currency): string {
   return new Intl.NumberFormat(currency === 'EUR' ? 'fr-FR' : 'en-US', {
     style: 'currency',
     currency,
-  }).format(cents / 100);
+  })
+    .format(cents / 100)
+    // Les espaces fines insécables du format français ne s'affichent pas
+    // dans les polices du PDF : on les remplace par des espaces normales.
+    .replace(/[  ]/g, ' ');
 }
