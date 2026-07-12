@@ -32,6 +32,16 @@ export default function ClientsPage() {
 
   useEffect(load, [load]);
 
+  async function remove(id: string) {
+    if (!confirm('Supprimer ce client ? Les factures déjà émises conservent ses coordonnées.')) return;
+    await createBrowserSupabase().from('clients').delete().eq('id', id);
+    if (editingId === id) {
+      setForm(EMPTY);
+      setEditingId(null);
+    }
+    load();
+  }
+
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const supabase = createBrowserSupabase();
@@ -75,13 +85,20 @@ export default function ClientsPage() {
         {clients.map((c) => (
           <li key={c.id} className="row-hover flex items-center justify-between p-4">
             <div>
-              <p className="font-medium">{c.company || `${c.first_name} ${c.last_name}`}</p>
+              <p className="font-medium">
+                {c.company || `${c.first_name} ${c.last_name}`.trim() || 'Client sans nom'}
+              </p>
               <p className="text-sm text-sepia">{c.city} {c.email && `· ${c.email}`}</p>
             </div>
-            <button className="link text-sm"
-              onClick={() => { setEditingId(c.id); const { id: _id, org_id: _orgId, ...rest } = c; setForm(rest); }}>
-              Modifier
-            </button>
+            <span className="flex gap-3">
+              <button className="link text-sm"
+                onClick={() => { setEditingId(c.id); const { id: _id, org_id: _orgId, ...rest } = c; setForm(rest); }}>
+                Modifier
+              </button>
+              <button className="link text-margin text-sm" onClick={() => remove(c.id)}>
+                Supprimer
+              </button>
+            </span>
           </li>
         ))}
         {clients.length === 0 && (
