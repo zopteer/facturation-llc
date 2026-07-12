@@ -83,6 +83,20 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
     if (data) setLines([...lines, data]);
   }
 
+  async function selectTemplate(templateId: string) {
+    if (!doc) return;
+    const next = { ...doc, template: templateId };
+    setDoc(next);
+    if (doc.status === 'brouillon') {
+      scheduleSave(next, lines);
+    } else {
+      // La présentation reste modifiable même sur un document envoyé.
+      const { error } = await createBrowserSupabase().from('documents')
+        .update({ template: templateId }).eq('id', doc.id);
+      setSaveError(!!error);
+    }
+  }
+
   async function selectClient(clientId: string) {
     const client = clients.find((c) => c.id === clientId);
     patchDoc({ client_id: clientId || null, client_snapshot: client ?? {} });
@@ -108,9 +122,27 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
       </div>
       {readOnly && (
         <p className="card border-l-2 border-l-margin p-3 text-sm text-sepia">
-          Document {STATUS_LABELS[doc.status].toLowerCase()} — lecture seule.
+          Document {STATUS_LABELS[doc.status].toLowerCase()} — lecture seule (seul le modèle du PDF reste modifiable).
         </p>
       )}
+
+      <section className="card p-5">
+        <h2 className="eyebrow mb-4">Modèle du PDF</h2>
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          {TEMPLATES.map((t) => (
+            <button key={t.id} type="button" onClick={() => selectTemplate(t.id)}
+              className={`flex items-center gap-2 rounded border p-2 text-left text-xs transition-colors ${
+                (doc.template ?? 'moderne-noir') === t.id
+                  ? 'border-ink bg-paper font-semibold'
+                  : 'border-line hover:border-sepia'
+              }`}>
+              <span className="h-4 w-4 shrink-0 rounded-full border border-line"
+                style={{ backgroundColor: t.colors.accent }} />
+              {t.label}
+            </button>
+          ))}
+        </div>
+      </section>
 
       <fieldset disabled={readOnly} className="space-y-6">
         <section className="card p-5">
@@ -127,24 +159,6 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
           <p className="mt-2 text-xs text-faded">
             Ajoutez de nouveaux clients dans l’onglet Clients.
           </p>
-        </section>
-
-        <section className="card p-5">
-          <h2 className="eyebrow mb-4">Modèle du PDF</h2>
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
-            {TEMPLATES.map((t) => (
-              <button key={t.id} type="button" onClick={() => patchDoc({ template: t.id })}
-                className={`flex items-center gap-2 rounded border p-2 text-left text-xs transition-colors ${
-                  (doc.template ?? 'moderne-noir') === t.id
-                    ? 'border-ink bg-paper font-semibold'
-                    : 'border-line hover:border-sepia'
-                }`}>
-                <span className="h-4 w-4 shrink-0 rounded-full border border-line"
-                  style={{ backgroundColor: t.colors.accent }} />
-                {t.label}
-              </button>
-            ))}
-          </div>
         </section>
 
         <section className="card p-5">
