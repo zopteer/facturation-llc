@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { useOrg } from '@/lib/useOrg';
-import { convertQuote, createDraft, sendDocument } from '@/lib/documents';
+import { convertQuote, createDraft, duplicateDocument, sendDocument } from '@/lib/documents';
 import { STATUS_LABELS, documentName, stampClass } from '@/lib/labels';
 import type { DocumentRow, DocumentStatus, DocumentType } from '@/lib/types';
 
@@ -109,6 +109,12 @@ export default function DocumentsPage() {
                 <button className="link"
                   onClick={async () => router.push(`/documents/${await convertQuote(d.id)}`)}>
                   Convertir en facture
+                </button>
+              )}
+              {d.status !== 'brouillon' && (
+                <button className="link"
+                  onClick={async () => router.push(`/documents/${await duplicateDocument(d.id)}`)}>
+                  Dupliquer
                 </button>
               )}
             </span>

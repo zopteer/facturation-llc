@@ -40,6 +40,39 @@ export async function sendDocument(docId: string): Promise<void> {
   }
 }
 
+export async function duplicateDocument(docId: string): Promise<string> {
+  const supabase = createBrowserSupabase();
+  const { data: doc } = await supabase.from('documents')
+    .select('*').eq('id', docId).single();
+  if (!doc) throw new Error('Document introuvable');
+  const { data: copy, error } = await supabase.from('documents').insert({
+    org_id: doc.org_id,
+    type: doc.type,
+    numero: null,
+    client_id: doc.client_id,
+    client_snapshot: doc.client_snapshot,
+    issue_date: new Date().toISOString().slice(0, 10),
+    due_date: null,
+    due_on_receipt: doc.due_on_receipt,
+    currency: doc.currency,
+    vat_rate: doc.vat_rate,
+    vat_na: doc.vat_na,
+    status: 'brouillon',
+    payment_cheque: doc.payment_cheque,
+    payment_transfer: doc.payment_transfer,
+    footer: doc.footer,
+  }).select('id').single();
+  if (error) throw error;
+  const { data: lines } = await supabase.from('document_lines')
+    .select('label, quantity, unit_price_cents, position').eq('document_id', docId);
+  if (lines?.length) {
+    const { error: lineError } = await supabase.from('document_lines')
+      .insert(lines.map((l) => ({ ...l, document_id: copy.id })));
+    if (lineError) throw lineError;
+  }
+  return copy.id;
+}
+
 export async function convertQuote(quoteId: string): Promise<string> {
   const supabase = createBrowserSupabase();
   const { data: quote } = await supabase.from('documents')

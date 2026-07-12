@@ -19,18 +19,29 @@ const s = StyleSheet.create({
   senderLine: { marginBottom: 2, color: '#333333' },
   clientBlock: { textAlign: 'right' },
   clientLine: { marginBottom: 2, color: '#333333' },
-  sectionTitle: { fontSize: 15, fontFamily: 'Helvetica-Bold', marginTop: 36, marginBottom: 8 },
-  ruleHeavy: { borderBottomWidth: 1, borderColor: '#111111' },
-  lineRow: {
+  table: { marginTop: 36 },
+  thead: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    borderBottomWidth: 0.5,
-    borderColor: '#CCCCCC',
-    paddingVertical: 9,
+    backgroundColor: '#8A8273',
+    color: '#FFFFFF',
+    paddingVertical: 7,
+    paddingHorizontal: 8,
+    fontSize: 9,
   },
-  lineDetail: { color: '#777777', fontSize: 9, marginTop: 2 },
-  lineAmount: { fontFamily: 'Helvetica-Bold' },
+  tRow: {
+    flexDirection: 'row',
+    paddingVertical: 12,
+    paddingHorizontal: 8,
+    fontFamily: 'Times-Italic',
+    fontSize: 10.5,
+    borderBottomWidth: 0.5,
+    borderColor: '#DDDDDD',
+  },
+  cDesc: { width: '44%' },
+  cQty: { width: '10%', textAlign: 'center' },
+  cPU: { width: '18%', textAlign: 'center' },
+  cTva: { width: '10%', textAlign: 'center' },
+  cTotal: { width: '18%', textAlign: 'right' },
   totals: { marginTop: 18, alignSelf: 'flex-end', width: 220 },
   totalRow: { flexDirection: 'row', justifyContent: 'flex-end', marginBottom: 6 },
   totalLabel: { fontFamily: 'Helvetica-Bold', marginRight: 16 },
@@ -90,23 +101,26 @@ export function DocumentPdf({ doc, lines, settings }: {
           </View>
         </View>
 
-        <Text style={s.sectionTitle}>Description</Text>
-        <View style={s.ruleHeavy} />
-        {lines.map((l) => (
-          <View key={l.id} style={s.lineRow}>
-            <View>
-              <Text>{l.label}</Text>
-              {Number(l.quantity) !== 1 ? (
-                <Text style={s.lineDetail}>
-                  {String(l.quantity)} × {formatCents(l.unit_price_cents, doc.currency)}
-                </Text>
-              ) : null}
-            </View>
-            <Text style={s.lineAmount}>
-              {formatCents(Math.round(Number(l.quantity) * l.unit_price_cents), doc.currency)}
-            </Text>
+        <View style={s.table}>
+          <View style={s.thead}>
+            <Text style={s.cDesc}>Description</Text>
+            <Text style={s.cQty}>Qté</Text>
+            <Text style={s.cPU}>Prix unitaire</Text>
+            <Text style={s.cTva}>TVA (%)</Text>
+            <Text style={s.cTotal}>Total HT</Text>
           </View>
-        ))}
+          {lines.map((l) => (
+            <View key={l.id} style={s.tRow}>
+              <Text style={s.cDesc}>{l.label}</Text>
+              <Text style={s.cQty}>{String(l.quantity)}</Text>
+              <Text style={s.cPU}>{formatCents(l.unit_price_cents, doc.currency)}</Text>
+              <Text style={s.cTva}>{String(doc.vat_na ? 0 : doc.vat_rate)}</Text>
+              <Text style={s.cTotal}>
+                {formatCents(Math.round(Number(l.quantity) * l.unit_price_cents), doc.currency)}
+              </Text>
+            </View>
+          ))}
+        </View>
 
         <View style={s.totals}>
           <View style={s.totalRow}>
