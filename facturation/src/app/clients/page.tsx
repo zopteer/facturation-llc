@@ -45,10 +45,12 @@ export default function ClientsPage() {
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const supabase = createBrowserSupabase();
-    if (editingId) {
-      await supabase.from('clients').update(form).eq('id', editingId);
-    } else {
-      await supabase.from('clients').insert({ ...form, org_id: orgId });
+    const { error } = editingId
+      ? await supabase.from('clients').update(form).eq('id', editingId)
+      : await supabase.from('clients').insert({ ...form, org_id: orgId });
+    if (error) {
+      alert(`Échec de l'enregistrement du client : ${error.message}`);
+      return;
     }
     setForm(EMPTY);
     setEditingId(null);

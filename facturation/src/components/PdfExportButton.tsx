@@ -2,18 +2,35 @@
 import { pdf } from '@react-pdf/renderer';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { DocumentPdf } from './DocumentPdf';
-import type { DocumentLineRow, DocumentRow, SettingsRow } from '@/lib/types';
+import type { ClientRow, DocumentLineRow, DocumentRow, SettingsRow } from '@/lib/types';
 
 export function PdfExportButton({ doc, lines }: { doc: DocumentRow; lines: DocumentLineRow[] }) {
   async function download() {
-    const { data: settings, error } = await createBrowserSupabase()
+    const supabase = createBrowserSupabase();
+    const { data: settings, error } = await supabase
       .from('settings').select('*').eq('org_id', doc.org_id).single();
     if (error || !settings) {
       alert('Impossible de charger les réglages — PDF non généré.');
       return;
     }
+
+    // Complète les coordonnées manquantes du snapshot depuis le carnet de
+    // clients (ex. SIRET ajouté après la création du document). Les valeurs
+    // déjà figées dans le snapshot restent prioritaires.
+    let docForPdf = doc;
+    if (doc.client_id) {
+      const { data: client } = await supabase
+        .from('clients').select('*').eq('id', doc.client_id).maybeSingle();
+      if (client) {
+        const snapshotFilled = Object.fromEntries(
+          Object.entries(doc.client_snapshot ?? {}).filter(([, v]) => v !== '' && v != null),
+        ) as Partial<ClientRow>;
+        docForPdf = { ...doc, client_snapshot: { ...client, ...snapshotFilled } };
+      }
+    }
+
     const blob = await pdf(
-      <DocumentPdf doc={doc} lines={lines} settings={settings as SettingsRow} />,
+      <DocumentPdf doc={docForPdf} lines={lines} settings={settings as SettingsRow} />,
     ).toBlob();
     const label = doc.type === 'facture' ? 'Facture' : 'Devis';
     const a = Object.assign(document.createElement('a'), {
