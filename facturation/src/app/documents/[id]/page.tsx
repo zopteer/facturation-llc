@@ -4,6 +4,7 @@ import { createBrowserSupabase } from '@/lib/supabase/client';
 import { computeTotals, formatCents } from '@/lib/money';
 import { PdfExportButton } from '@/components/PdfExportButton';
 import { STATUS_LABELS, documentName } from '@/lib/labels';
+import { TEMPLATES } from '@/lib/templates';
 import type { ClientRow, DocumentLineRow, DocumentRow } from '@/lib/types';
 
 export default function DocumentEditor({ params }: { params: Promise<{ id: string }> }) {
@@ -41,11 +42,11 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
         const supabase = createBrowserSupabase();
         const {
           client_id, client_snapshot, issue_date, due_date, due_on_receipt,
-          currency, vat_rate, vat_na, payment_cheque, payment_transfer, footer,
+          currency, vat_rate, vat_na, payment_cheque, payment_transfer, footer, template,
         } = nextDoc;
         const docFields = {
           client_id, client_snapshot, issue_date, due_date, due_on_receipt,
-          currency, vat_rate, vat_na, payment_cheque, payment_transfer, footer,
+          currency, vat_rate, vat_na, payment_cheque, payment_transfer, footer, template,
         };
         const { error: docError } = await supabase.from('documents').update(docFields)
           .eq('id', nextDoc.id).eq('status', 'brouillon');
@@ -126,6 +127,24 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
           <p className="mt-2 text-xs text-faded">
             Ajoutez de nouveaux clients dans l’onglet Clients.
           </p>
+        </section>
+
+        <section className="card p-5">
+          <h2 className="eyebrow mb-4">Modèle du PDF</h2>
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3">
+            {TEMPLATES.map((t) => (
+              <button key={t.id} type="button" onClick={() => patchDoc({ template: t.id })}
+                className={`flex items-center gap-2 rounded border p-2 text-left text-xs transition-colors ${
+                  (doc.template ?? 'moderne-noir') === t.id
+                    ? 'border-ink bg-paper font-semibold'
+                    : 'border-line hover:border-sepia'
+                }`}>
+                <span className="h-4 w-4 shrink-0 rounded-full border border-line"
+                  style={{ backgroundColor: t.colors.accent }} />
+                {t.label}
+              </button>
+            ))}
+          </div>
         </section>
 
         <section className="card p-5">

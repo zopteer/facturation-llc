@@ -20,6 +20,7 @@ export function quoteToInvoicePayload(
     payment_cheque: quote.payment_cheque,
     payment_transfer: quote.payment_transfer,
     footer: quote.footer,
+    template: quote.template,
     quote_id: quote.id,
   };
 }

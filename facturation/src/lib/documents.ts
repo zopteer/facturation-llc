@@ -61,6 +61,7 @@ export async function duplicateDocument(docId: string): Promise<string> {
     payment_cheque: doc.payment_cheque,
     payment_transfer: doc.payment_transfer,
     footer: doc.footer,
+    template: doc.template,
   }).select('id').single();
   if (error) throw error;
   const { data: lines } = await supabase.from('document_lines')

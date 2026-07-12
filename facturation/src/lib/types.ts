@@ -34,6 +34,7 @@ export interface DocumentRow {
   payment_cheque: boolean;
   payment_transfer: boolean;
   footer: string;
+  template: string;            // id de modèle PDF (voir lib/templates.ts)
   quote_id: string | null;
   created_at: string;
 }

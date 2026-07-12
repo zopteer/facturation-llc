@@ -8,7 +8,7 @@ const quote: DocumentRow = {
   issue_date: '2026-06-01', due_date: null, due_on_receipt: true,
   currency: 'USD', vat_rate: 0, vat_na: true, status: 'envoyee',
   payment_cheque: false, payment_transfer: true, footer: 'Merci',
-  quote_id: null, created_at: '2026-06-01T00:00:00Z',
+  template: 'minimal-noir', quote_id: null, created_at: '2026-06-01T00:00:00Z',
 };
 
 describe('quoteToInvoicePayload', () => {
@@ -22,5 +22,6 @@ describe('quoteToInvoicePayload', () => {
     expect(inv.currency).toBe('USD');
     expect(inv.vat_na).toBe(true);
     expect(inv.client_id).toBe('c1');
+    expect(inv.template).toBe('minimal-noir');
   });
 });
