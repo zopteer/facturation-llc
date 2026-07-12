@@ -47,7 +47,7 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto max-w-xl">
-      <h1 className="font-display mb-8 text-3xl">Réglages</h1>
+      <h1 className="page-title">Réglages</h1>
       <form onSubmit={save} className="card space-y-4 p-5">
         <p className="eyebrow">Mes informations</p>
         {FIELDS.map(({ key, label }) => (

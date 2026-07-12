@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { createBrowserSupabase } from '@/lib/supabase/client';
 import { useOrg } from '@/lib/useOrg';
 import { convertQuote, createDraft, duplicateDocument, sendDocument } from '@/lib/documents';
-import { STATUS_LABELS, documentName, stampClass } from '@/lib/labels';
+import { STATUS_LABELS, documentName, formatDateFr, stampClass } from '@/lib/labels';
 import type { DocumentRow, DocumentStatus, DocumentType } from '@/lib/types';
 
 export default function DocumentsPage() {
@@ -44,9 +44,9 @@ export default function DocumentsPage() {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-2">
-        <h1 className="font-display text-3xl">Documents</h1>
-        <div className="flex gap-2">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
+        <h1 className="page-title mb-0 flex-1">Documents</h1>
+        <div className="flex gap-2 pb-1">
           <button onClick={() => newDoc('facture')} className="btn-primary">
             + Facture
           </button>
@@ -72,15 +72,17 @@ export default function DocumentsPage() {
 
       <ul className="card divide-y divide-line">
         {docs.map((d) => (
-          <li key={d.id} className="flex flex-wrap items-center justify-between gap-2 p-4">
-            <Link href={`/documents/${d.id}`} className="link min-w-40 font-medium">
-              {documentName(d)}
-            </Link>
-            <span className="text-sm text-sepia">
-              {(d.client_snapshot?.company as string) || '—'} · <span className="amount">{d.issue_date}</span>
+          <li key={d.id} className="row-hover flex flex-wrap items-start justify-between gap-x-4 gap-y-2 p-4">
+            <span className="min-w-44 flex-1">
+              <Link href={`/documents/${d.id}`} className="link font-medium">
+                {documentName(d)}
+              </Link>
+              <span className="mt-1 block text-sm text-sepia">
+                {(d.client_snapshot?.company as string) || 'Sans client'} · <span className="amount">{formatDateFr(d.issue_date)}</span>
+              </span>
             </span>
             <span className={stampClass(d.status)}>{STATUS_LABELS[d.status]}</span>
-            <span className="flex gap-3 text-sm">
+            <span className="flex w-full flex-wrap gap-x-4 gap-y-1 text-sm sm:w-auto">
               {d.status === 'brouillon' && (
                 <>
                   <button className="link"

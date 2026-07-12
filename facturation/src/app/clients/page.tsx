@@ -47,7 +47,7 @@ export default function ClientsPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="font-display mb-8 text-3xl">Clients</h1>
+      <h1 className="page-title">Clients</h1>
       <form onSubmit={save} className="card mb-8 grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
         <p className="eyebrow sm:col-span-2">
           {editingId ? 'Modifier le client' : 'Nouveau client'}
@@ -73,7 +73,7 @@ export default function ClientsPage() {
       </form>
       <ul className="card divide-y divide-line">
         {clients.map((c) => (
-          <li key={c.id} className="flex items-center justify-between p-4">
+          <li key={c.id} className="row-hover flex items-center justify-between p-4">
             <div>
               <p className="font-medium">{c.company || `${c.first_name} ${c.last_name}`}</p>
               <p className="text-sm text-sepia">{c.city} {c.email && `· ${c.email}`}</p>

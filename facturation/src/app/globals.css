@@ -46,6 +46,24 @@ body {
   box-shadow: 0 1px 3px rgba(43, 42, 38, 0.07);
 }
 
+/* Titre de page : double filet de registre */
+.page-title {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 30px;
+  line-height: 1.15;
+  padding-bottom: 12px;
+  border-bottom: 3px double var(--sepia);
+  margin-bottom: 28px;
+}
+
+/* Ligne de liste survolable */
+.row-hover {
+  transition: background-color 0.15s ease;
+}
+.row-hover:hover {
+  background: var(--paper);
+}
+
 /* Petit libellé de section, façon en-tête de registre */
 .eyebrow {
   font-size: 11px;
