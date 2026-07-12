@@ -6,8 +6,8 @@
   --ink: #2b2a26;
   --sepia: #6e5f4b;
   --line: #e2d8c3;
-  --ledger: #33523f;
-  --ledger-deep: #2a4334;
+  --ledger: #1c1b17;
+  --ledger-deep: #000000;
   --margin-red: #c05a47;
   --ink-blue: #3a5578;
   --faded: #9a8f7c;
@@ -120,9 +120,9 @@ body {
   transform: rotate(-2deg);
   white-space: nowrap;
 }
-.stamp-payee { color: var(--ledger); }
+.stamp-payee { color: var(--ink); }
 .stamp-impayee { color: var(--margin-red); }
-.stamp-envoyee { color: var(--ink-blue); }
+.stamp-envoyee { color: var(--sepia); }
 .stamp-brouillon { color: var(--sepia); border-style: dashed; transform: none; }
 .stamp-annulee { color: var(--faded); text-decoration: line-through; transform: none; }
 
@@ -146,13 +146,13 @@ body {
 }
 
 .link {
-  color: var(--ledger);
+  color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-color: var(--line);
 }
 .link:hover {
-  text-decoration-color: var(--ledger);
+  text-decoration-color: var(--margin-red);
 }
 
 :focus-visible {
