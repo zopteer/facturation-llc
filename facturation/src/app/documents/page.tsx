@@ -57,13 +57,13 @@ export default function DocumentsPage() {
       </div>
 
       <div className="mb-4 flex gap-2">
-        <select className="field w-auto text-sm" value={typeFilter}
+        <select className="select w-auto text-sm" value={typeFilter}
           onChange={(e) => setTypeFilter(e.target.value as '' | DocumentType)}>
           <option value="">Tous les types</option>
           <option value="facture">Factures</option>
           <option value="devis">Devis</option>
         </select>
-        <select className="field w-auto text-sm" value={statusFilter}
+        <select className="select w-auto text-sm" value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as '' | DocumentStatus)}>
           <option value="">Tous les statuts</option>
           {Object.entries(STATUS_LABELS).map(([v, l]) => <option key={v} value={v}>{l}</option>)}

@@ -114,7 +114,7 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
       <fieldset disabled={readOnly} className="space-y-6">
         <section className="card p-5">
           <h2 className="eyebrow mb-4">Client</h2>
-          <select className="field" value={doc.client_id ?? ''}
+          <select className="select" value={doc.client_id ?? ''}
             onChange={(e) => selectClient(e.target.value)}>
             <option value="">— Choisir un client —</option>
             {clients.map((c) => (
@@ -146,7 +146,7 @@ export default function DocumentEditor({ params }: { params: Promise<{ id: strin
               Échéance à réception
             </label>
             <label className="text-sm text-sepia">Devise
-              <select className="field mt-1" value={doc.currency}
+              <select className="select mt-1" value={doc.currency}
                 onChange={(e) => patchDoc({ currency: e.target.value as DocumentRow['currency'] })}>
                 <option value="EUR">€ Euro</option>
                 <option value="USD">$ Dollar US</option>

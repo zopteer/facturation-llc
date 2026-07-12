@@ -25,7 +25,7 @@ export function PdfExportButton({ doc, lines }: { doc: DocumentRow; lines: Docum
   }
 
   return (
-    <button onClick={download} className="rounded bg-blue-600 px-4 py-2 text-sm text-white">
+    <button onClick={download} className="btn-primary">
       Exporter en PDF
     </button>
   );

@@ -96,6 +96,31 @@ body {
   border-bottom-style: dashed;
 }
 
+/* Listes déroulantes */
+.select {
+  appearance: none;
+  width: 100%;
+  background-color: var(--sheet);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 8px 34px 8px 10px;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMicgaGVpZ2h0PScxMicgdmlld0JveD0nMCAwIDI0IDI0JyBmaWxsPSdub25lJyBzdHJva2U9JyM2ZTVmNGInIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJz48cGF0aCBkPSdNNiA5bDYgNiA2LTYnLz48L3N2Zz4=");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: border-color 0.15s ease;
+}
+.select:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+.select:disabled {
+  color: var(--faded);
+  cursor: default;
+}
+
 .btn-primary {
   background: var(--ledger);
   color: var(--sheet);
