@@ -76,8 +76,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* Panneau mobile */}
       {menuOpen && (
         <div className="fixed inset-0 z-30 md:hidden">
-          <div className="absolute inset-0 bg-ink/40" onClick={() => setMenuOpen(false)} />
-          <div className="absolute inset-y-0 left-0 flex w-64 flex-col gap-1 bg-ledger p-5 shadow-xl">
+          <div className="drawer-overlay absolute inset-0 bg-ink/40" onClick={() => setMenuOpen(false)} />
+          <div className="drawer-panel absolute inset-y-0 left-0 flex w-64 flex-col gap-1 bg-ledger p-5 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
               <p className="font-display text-xl text-sheet">Facturation</p>
               <button onClick={() => setMenuOpen(false)} aria-label="Fermer le menu"

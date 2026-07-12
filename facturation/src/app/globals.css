@@ -159,3 +159,50 @@ body {
   outline: 2px solid var(--ink-blue);
   outline-offset: 2px;
 }
+
+/* Transitions */
+.btn-primary,
+.btn-ghost,
+.link,
+.field {
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+@keyframes page-rise {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+main > * {
+  animation: page-rise 0.22s ease-out;
+}
+
+@keyframes drawer-slide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+.drawer-panel {
+  animation: drawer-slide 0.22s ease-out;
+}
+
+@keyframes overlay-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.drawer-overlay {
+  animation: overlay-fade 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main > *,
+  .drawer-panel,
+  .drawer-overlay {
+    animation: none;
+  }
+  .btn-primary,
+  .btn-ghost,
+  .link,
+  .field {
+    transition: none;
+  }
+}
