@@ -6,8 +6,8 @@
   --ink: #2b2a26;
   --sepia: #6e5f4b;
   --line: #e2d8c3;
-  --ledger: #33523f;
-  --ledger-deep: #2a4334;
+  --ledger: #1c1b17;
+  --ledger-deep: #000000;
   --margin-red: #c05a47;
   --ink-blue: #3a5578;
   --faded: #9a8f7c;
@@ -46,6 +46,24 @@ body {
   box-shadow: 0 1px 3px rgba(43, 42, 38, 0.07);
 }
 
+/* Titre de page : double filet de registre */
+.page-title {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-size: 30px;
+  line-height: 1.15;
+  padding-bottom: 12px;
+  border-bottom: 3px double var(--sepia);
+  margin-bottom: 28px;
+}
+
+/* Ligne de liste survolable */
+.row-hover {
+  transition: background-color 0.15s ease;
+}
+.row-hover:hover {
+  background: var(--paper);
+}
+
 /* Petit libellé de section, façon en-tête de registre */
 .eyebrow {
   font-size: 11px;
@@ -76,6 +94,31 @@ body {
 .field:disabled {
   color: var(--faded);
   border-bottom-style: dashed;
+}
+
+/* Listes déroulantes */
+.select {
+  appearance: none;
+  width: 100%;
+  background-color: var(--sheet);
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  padding: 8px 34px 8px 10px;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMicgaGVpZ2h0PScxMicgdmlld0JveD0nMCAwIDI0IDI0JyBmaWxsPSdub25lJyBzdHJva2U9JyM2ZTVmNGInIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJz48cGF0aCBkPSdNNiA5bDYgNiA2LTYnLz48L3N2Zz4=");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  transition: border-color 0.15s ease;
+}
+.select:focus {
+  outline: none;
+  border-color: var(--ink);
+}
+.select:disabled {
+  color: var(--faded);
+  cursor: default;
 }
 
 .btn-primary {
@@ -120,9 +163,9 @@ body {
   transform: rotate(-2deg);
   white-space: nowrap;
 }
-.stamp-payee { color: var(--ledger); }
+.stamp-payee { color: var(--ink); }
 .stamp-impayee { color: var(--margin-red); }
-.stamp-envoyee { color: var(--ink-blue); }
+.stamp-envoyee { color: var(--sepia); }
 .stamp-brouillon { color: var(--sepia); border-style: dashed; transform: none; }
 .stamp-annulee { color: var(--faded); text-decoration: line-through; transform: none; }
 
@@ -146,16 +189,63 @@ body {
 }
 
 .link {
-  color: var(--ledger);
+  color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 3px;
   text-decoration-color: var(--line);
 }
 .link:hover {
-  text-decoration-color: var(--ledger);
+  text-decoration-color: var(--margin-red);
 }
 
 :focus-visible {
   outline: 2px solid var(--ink-blue);
   outline-offset: 2px;
+}
+
+/* Transitions */
+.btn-primary,
+.btn-ghost,
+.link,
+.field {
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    color 0.15s ease, text-decoration-color 0.15s ease;
+}
+
+@keyframes page-rise {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+main > * {
+  animation: page-rise 0.22s ease-out;
+}
+
+@keyframes drawer-slide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+.drawer-panel {
+  animation: drawer-slide 0.22s ease-out;
+}
+
+@keyframes overlay-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.drawer-overlay {
+  animation: overlay-fade 0.2s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  main > *,
+  .drawer-panel,
+  .drawer-overlay {
+    animation: none;
+  }
+  .btn-primary,
+  .btn-ghost,
+  .link,
+  .field {
+    transition: none;
+  }
 }

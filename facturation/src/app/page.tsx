@@ -34,10 +34,10 @@ export default function Dashboard() {
 
   return (
     <div className="mx-auto max-w-3xl">
-      <h1 className="font-display mb-8 text-3xl">Tableau de bord</h1>
+      <h1 className="page-title">Tableau de bord</h1>
       <div className="card mb-8 p-5">
         <p className="eyebrow mb-2">Impayés</p>
-        <p className="amount text-3xl">
+        <p className={`amount text-3xl ${unpaidByCurrency.EUR + unpaidByCurrency.USD > 0 ? 'text-margin' : ''}`}>
           {formatCents(unpaidByCurrency.EUR, 'EUR')}
           {unpaidByCurrency.USD > 0 && <> + {formatCents(unpaidByCurrency.USD, 'USD')}</>}
         </p>
@@ -45,7 +45,7 @@ export default function Dashboard() {
       <p className="eyebrow mb-3">Derniers documents</p>
       <ul className="card divide-y divide-line">
         {recent.map((d) => (
-          <li key={d.id} className="flex items-center justify-between gap-3 p-4">
+          <li key={d.id} className="row-hover flex items-center justify-between gap-3 p-4">
             <Link href={`/documents/${d.id}`} className="link">
               {documentName(d)}
             </Link>
