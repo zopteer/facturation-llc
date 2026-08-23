@@ -1,0 +1,31 @@
+name: Réveil Supabase (keep-alive)
+
+# Maintient le projet Supabase (offre gratuite) éveillé en lui envoyant
+# une petite requête base de données tous les 3 jours. La pause de
+# l'offre gratuite survient après 7 jours d'inactivité.
+#
+# Note : la clé ci-dessous est la clé « publishable » (publique par
+# conception, déjà présente dans le navigateur) — aucun secret ici.
+# Ce workflow PRÉVIENT la mise en pause ; il ne peut pas réveiller un
+# projet déjà en pause (ça, ça se fait une fois via le dashboard).
+
+on:
+  schedule:
+    - cron: '0 6 */3 * *'   # tous les 3 jours à 06:00 UTC
+  workflow_dispatch: {}       # bouton « Run workflow » manuel
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase (requête base de données)
+        run: |
+          echo "Ping $(date -u)"
+          code=$(curl -s -o /dev/null -w "%{http_code}" \
+            "https://fvytdepctnkhvbjuscmx.supabase.co/rest/v1/organizations?select=id&limit=1" \
+            -H "apikey: sb_publishable_x492r2pINs44tC5Kx7f3yg_24-roW18" \
+            --max-time 30)
+          echo "Réponse HTTP : $code"
+          if [ "$code" != "200" ]; then
+            echo "::warning::Supabase a répondu $code (attendu 200) — vérifiez que le projet n'est pas en pause."
+          fi
