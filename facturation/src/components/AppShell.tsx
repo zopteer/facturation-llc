@@ -55,7 +55,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       </aside>
 
       {/* En-tête mobile */}
-      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-line bg-rail px-4 py-3 md:hidden">
+      <header className="sticky top-0 z-20 flex items-center justify-between border-b border-line bg-rail px-4 py-3 md:hidden"
+        style={{ paddingTop: 'calc(0.75rem + env(safe-area-inset-top))' }}>
         <div className="flex items-center gap-2">
           <span className="inline-block h-2 w-2 rounded-full bg-cyan" style={{ boxShadow: '0 0 10px 2px var(--cyan)' }} />
           <p className="font-display text-lg font-semibold text-sheet">Facturation</p>
@@ -91,7 +92,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       )}
 
-      <main className="flex-1 p-4 md:p-8">{children}</main>
+      <main className="flex-1 p-4 md:p-8"
+        style={{ paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}>
+        {children}
+      </main>
     </div>
   );
 }

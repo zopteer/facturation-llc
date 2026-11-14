@@ -143,14 +143,14 @@ function Editor() {
 
         <section className="card p-5">
           <h2 className="eyebrow mb-4">Produits</h2>
-          <div className="ledger overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="ledger">
+            <table className="w-full table-fixed text-sm">
               <thead>
-                <tr className="ledger-row text-left">
-                  <th className="eyebrow p-2 font-semibold">Désignation</th>
-                  <th className="eyebrow w-24 p-2 font-semibold">Quantité</th>
-                  <th className="eyebrow w-32 p-2 font-semibold">Prix unitaire HT</th>
-                  <th className="eyebrow w-28 p-2 text-right font-semibold">Total HT</th>
+                <tr className="ledger-row text-left text-[9px] uppercase tracking-wider text-sepia">
+                  <th className="w-[40%] p-2 font-semibold">Désignation</th>
+                  <th className="w-[15%] p-2 font-semibold">Qté</th>
+                  <th className="w-[22%] p-2 font-semibold">PU HT</th>
+                  <th className="w-[23%] p-2 text-right font-semibold">Total</th>
                 </tr>
               </thead>
               <tbody>
@@ -169,7 +169,7 @@ function Editor() {
                         value={l.unit_price_cents / 100}
                         onChange={(e) => patchLine(l.id, { unit_price_cents: Math.round(Number(e.target.value) * 100) })} />
                     </td>
-                    <td className="amount p-2 text-right">
+                    <td className="amount overflow-hidden p-2 text-right text-[11px] sm:text-sm">
                       {formatCents(Math.round(Number(l.quantity) * l.unit_price_cents), doc.currency)}
                     </td>
                   </tr>

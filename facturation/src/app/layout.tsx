@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Chakra_Petch, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import AppShell from "@/components/AppShell";
@@ -26,6 +26,11 @@ const jetBrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Facturation",
   description: "Factures et devis",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#070a14",
+  viewportFit: "cover", // utilise toute la dalle de l'iPhone (encoche incluse)
 };
 
 export default function RootLayout({
