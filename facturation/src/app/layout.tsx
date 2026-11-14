@@ -1,20 +1,23 @@
 import type { Metadata } from "next";
-import { Archivo, Fraunces, IBM_Plex_Mono } from "next/font/google";
+import { Chakra_Petch, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import AppShell from "@/components/AppShell";
 
-const archivo = Archivo({
+// --font-archivo : police d'interface (corps de texte)
+const spaceGrotesk = Space_Grotesk({
   variable: "--font-archivo",
   subsets: ["latin"],
 });
 
-const fraunces = Fraunces({
+// --font-fraunces : police d'affichage (titres, HUD)
+const chakraPetch = Chakra_Petch({
   variable: "--font-fraunces",
   subsets: ["latin"],
-  axes: ["opsz"],
+  weight: ["500", "600", "700"],
 });
 
-const plexMono = IBM_Plex_Mono({
+// --font-plex-mono : afficheurs numériques (montants, numéros, dates)
+const jetBrainsMono = JetBrains_Mono({
   variable: "--font-plex-mono",
   subsets: ["latin"],
   weight: ["400", "500"],
@@ -33,7 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="fr"
-      className={`${archivo.variable} ${fraunces.variable} ${plexMono.variable} h-full antialiased`}
+      className={`${spaceGrotesk.variable} ${chakraPetch.variable} ${jetBrainsMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <AppShell>{children}</AppShell>

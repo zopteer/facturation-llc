@@ -32,7 +32,7 @@ export default function Dashboard() {
       <h1 className="page-title">Tableau de bord</h1>
       <div className="card mb-8 p-5">
         <p className="eyebrow mb-2">Impayés</p>
-        <p className={`amount text-3xl ${unpaidTotal > 0 ? 'text-margin' : ''}`}>
+        <p className={`amount readout text-4xl ${unpaidTotal > 0 ? 'text-margin' : 'text-sheet'}`}>
           {formatCents(unpaidByCurrency.EUR, 'EUR')}
           {unpaidByCurrency.USD > 0 && <> + {formatCents(unpaidByCurrency.USD, 'USD')}</>}
         </p>

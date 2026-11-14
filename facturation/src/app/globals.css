@@ -1,155 +1,221 @@
 @import "tailwindcss";
 
+/* ================================================================== */
+/* Console de trésorerie holographique — thème futuriste              */
+/* ================================================================== */
+
 :root {
-  --paper: #f6f1e7;
-  --sheet: #fcf9f1;
-  --ink: #2b2a26;
-  --sepia: #6e5f4b;
-  --line: #e2d8c3;
-  --ledger: #1c1b17;
-  --ledger-deep: #000000;
-  --margin-red: #c05a47;
-  --ink-blue: #3a5578;
-  --faded: #9a8f7c;
+  --void: #070a14;
+  --panel-a: rgba(20, 28, 48, 0.72);
+  --panel-b: rgba(10, 16, 30, 0.72);
+  --rail: #0a0f1e;
+  --text: #e8eeff;
+  --muted: #8a97b8;
+  --faded: #5a6788;
+  --line: rgba(130, 170, 255, 0.14);
+  --line-strong: rgba(130, 170, 255, 0.3);
+  --cyan: #3df0e4;
+  --cyan-soft: #9ff7f0;
+  --violet: #a68bff;
+  --magenta: #ff5da2;
+  --lime: #6ee7a8;
 }
 
+/* Jetons de couleur consommés par les classes Tailwind des composants.
+   On garde les NOMS existants (ledger, sheet, sepia…) mais on remappe
+   leurs valeurs vers la palette futuriste. */
 @theme inline {
-  --color-paper: var(--paper);
-  --color-sheet: var(--sheet);
-  --color-ink: var(--ink);
-  --color-sepia: var(--sepia);
-  --color-line: var(--line);
-  --color-ledger: var(--ledger);
-  --color-ledger-deep: var(--ledger-deep);
-  --color-margin: var(--margin-red);
-  --color-inkblue: var(--ink-blue);
+  --color-paper: var(--void);
+  --color-sheet: var(--text);
+  --color-ink: var(--text);
+  --color-sepia: var(--muted);
   --color-faded: var(--faded);
+  --color-line: var(--line);
+  --color-ledger: var(--cyan);        /* accents : cases à cocher, « Enregistré ✓ » */
+  --color-ledger-deep: #0a1120;
+  --color-margin: var(--magenta);
+  --color-inkblue: var(--cyan);
+  --color-cyan: var(--cyan);
+  --color-violet: var(--violet);
+  --color-lime: var(--lime);
+  --color-rail: var(--rail);
   --font-sans: var(--font-archivo);
   --font-mono: var(--font-plex-mono);
 }
 
 body {
-  background: var(--paper);
-  color: var(--ink);
-  font-family: var(--font-archivo), ui-sans-serif, sans-serif;
+  position: relative;
+  min-height: 100vh;
+  background: var(--void);
+  color: var(--text);
+  font-family: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Fond : aurore + grille façon HUD */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background:
+    radial-gradient(62% 50% at 12% -5%, rgba(61, 240, 228, 0.12), transparent 70%),
+    radial-gradient(55% 48% at 100% 105%, rgba(166, 139, 255, 0.14), transparent 70%),
+    var(--void);
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(var(--line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--line) 1px, transparent 1px);
+  background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(circle at 50% 28%, #000, transparent 72%);
+  mask-image: radial-gradient(circle at 50% 28%, #000, transparent 72%);
+  opacity: 0.45;
 }
 
 .font-display {
-  font-family: var(--font-fraunces), Georgia, serif;
+  font-family: var(--font-fraunces), "Segoe UI", sans-serif;
+  letter-spacing: 0.01em;
 }
 
-/* Feuille de papier : cartes et sections */
+/* Panneaux de verre à arête lumineuse */
 .card {
-  background: var(--sheet);
+  position: relative;
+  background: linear-gradient(180deg, var(--panel-a), var(--panel-b));
   border: 1px solid var(--line);
-  border-radius: 3px;
-  box-shadow: 0 1px 3px rgba(43, 42, 38, 0.07);
+  border-radius: 14px;
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    0 24px 60px -36px rgba(0, 0, 0, 0.9);
+}
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 14px;
+  right: 14px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), var(--violet), transparent);
+  opacity: 0.55;
 }
 
-/* Titre de page : double filet de registre */
-.page-title {
-  font-family: var(--font-fraunces), Georgia, serif;
-  font-size: 30px;
-  line-height: 1.15;
-  padding-bottom: 12px;
-  border-bottom: 3px double var(--sepia);
-  margin-bottom: 28px;
-}
-
-/* Ligne de liste survolable */
-.row-hover {
-  transition: background-color 0.15s ease;
-}
-.row-hover:hover {
-  background: var(--paper);
-}
-
-/* Petit libellé de section, façon en-tête de registre */
+/* Libellé de section façon étiquette HUD */
 .eyebrow {
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: var(--sepia);
+  color: var(--cyan-soft);
 }
 
-/* Champs soulignés, comme un formulaire papier */
+/* Titre de page avec soulignement lumineux */
+.page-title {
+  font-family: var(--font-fraunces), "Segoe UI", sans-serif;
+  font-size: 30px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  padding-bottom: 14px;
+  margin-bottom: 28px;
+  position: relative;
+}
+.page-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 74px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--violet));
+  box-shadow: 0 0 14px rgba(61, 240, 228, 0.65);
+}
+
+/* Champs */
 .field {
   width: 100%;
-  background: transparent;
-  border: 0;
-  border-bottom: 1px solid var(--line);
-  border-radius: 0;
-  padding: 6px 2px;
-  color: var(--ink);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 9px 12px;
+  color: var(--text);
   font-size: 14px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
 }
+.field::placeholder { color: var(--faded); }
 .field:focus {
   outline: none;
-  border-bottom-color: var(--ink);
+  border-color: var(--cyan);
+  background: rgba(61, 240, 228, 0.05);
+  box-shadow: 0 0 0 3px rgba(61, 240, 228, 0.13);
 }
-.field::placeholder {
-  color: var(--faded);
-}
-.field:disabled {
-  color: var(--faded);
-  border-bottom-style: dashed;
-}
+.field:disabled { color: var(--faded); opacity: 0.7; }
 
 /* Listes déroulantes */
 .select {
   appearance: none;
   width: 100%;
-  background-color: var(--sheet);
+  background-color: rgba(255, 255, 255, 0.03);
   border: 1px solid var(--line);
-  border-radius: 3px;
-  padding: 8px 34px 8px 10px;
+  border-radius: 10px;
+  padding: 9px 34px 9px 12px;
   font-size: 14px;
-  color: var(--ink);
+  color: var(--text);
   cursor: pointer;
-  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMicgaGVpZ2h0PScxMicgdmlld0JveD0nMCAwIDI0IDI0JyBmaWxsPSdub25lJyBzdHJva2U9JyM2ZTVmNGInIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJz48cGF0aCBkPSdNNiA5bDYgNiA2LTYnLz48L3N2Zz4=");
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHdpZHRoPScxMicgaGVpZ2h0PScxMicgdmlld0JveD0nMCAwIDI0IDI0JyBmaWxsPSdub25lJyBzdHJva2U9JyM4QTk3QjgnIHN0cm9rZS13aWR0aD0nMicgc3Ryb2tlLWxpbmVjYXA9J3JvdW5kJyBzdHJva2UtbGluZWpvaW49J3JvdW5kJz48cGF0aCBkPSdNNiA5bDYgNiA2LTYnLz48L3N2Zz4=");
   background-repeat: no-repeat;
-  background-position: right 10px center;
-  transition: border-color 0.15s ease;
+  background-position: right 12px center;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 .select:focus {
   outline: none;
-  border-color: var(--ink);
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 3px rgba(61, 240, 228, 0.13);
 }
-.select:disabled {
-  color: var(--faded);
-  cursor: default;
-}
+.select:disabled { color: var(--faded); cursor: default; }
+.select option { background: var(--rail); color: var(--text); }
 
+/* Boutons */
 .btn-primary {
-  background: var(--ledger);
-  color: var(--sheet);
-  border-radius: 3px;
-  padding: 8px 18px;
+  background: linear-gradient(118deg, var(--cyan), var(--violet));
+  color: #05121a;
+  border: 0;
+  border-radius: 10px;
+  padding: 9px 18px;
   font-size: 13px;
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.02em;
   cursor: pointer;
+  box-shadow: 0 0 22px -6px rgba(61, 240, 228, 0.55);
+  transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
 }
 .btn-primary:hover {
-  background: var(--ledger-deep);
+  filter: brightness(1.08);
+  box-shadow: 0 0 28px -4px rgba(166, 139, 255, 0.65);
 }
+.btn-primary:active { transform: translateY(1px); }
 
 .btn-ghost {
-  border: 1px solid var(--line);
-  background: transparent;
-  color: var(--ink);
-  border-radius: 3px;
-  padding: 8px 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  border-radius: 10px;
+  padding: 9px 18px;
   font-size: 13px;
   cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background-color 0.15s ease;
 }
 .btn-ghost:hover {
-  background: var(--sheet);
-  border-color: var(--sepia);
+  border-color: var(--cyan);
+  color: var(--cyan);
+  background: rgba(61, 240, 228, 0.07);
 }
 
-/* Statuts en tampon encreur */
+/* Statuts : puces lumineuses */
 .stamp {
   display: inline-block;
   font-family: var(--font-plex-mono), monospace;
@@ -157,95 +223,76 @@ body {
   font-weight: 500;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  border: 1.5px solid currentColor;
-  border-radius: 3px;
-  padding: 2px 8px;
-  transform: rotate(-2deg);
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  padding: 3px 10px;
   white-space: nowrap;
 }
-.stamp-payee { color: var(--ink); }
-.stamp-impayee { color: var(--margin-red); }
-.stamp-envoyee { color: var(--sepia); }
-.stamp-brouillon { color: var(--sepia); border-style: dashed; transform: none; }
-.stamp-annulee { color: var(--faded); text-decoration: line-through; transform: none; }
+.stamp-payee { color: var(--lime); background: rgba(110, 231, 168, 0.08); box-shadow: 0 0 14px -4px var(--lime); }
+.stamp-impayee { color: var(--magenta); background: rgba(255, 93, 162, 0.08); box-shadow: 0 0 14px -4px var(--magenta); }
+.stamp-envoyee { color: var(--cyan); background: rgba(61, 240, 228, 0.08); box-shadow: 0 0 14px -4px var(--cyan); }
+.stamp-brouillon { color: var(--muted); border-style: dashed; }
+.stamp-annulee { color: var(--faded); text-decoration: line-through; }
 
-@media (prefers-reduced-motion: reduce) {
-  .stamp { transform: none; }
-}
-
-/* Montants et numéros : chiffres tabulaires de registre */
+/* Afficheurs numériques */
 .amount {
   font-family: var(--font-plex-mono), monospace;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+.readout {
+  text-shadow: 0 0 22px rgba(130, 170, 255, 0.3);
 }
 
-/* Tableau des produits : marge rouge de registre comptable */
+/* Tableau des produits : liseré cyan */
 .ledger {
-  border-left: 2px solid var(--margin-red);
-  padding-left: 12px;
+  border-left: 2px solid var(--cyan);
+  padding-left: 14px;
+  box-shadow: -8px 0 22px -16px var(--cyan);
 }
-.ledger-row {
-  border-bottom: 1px solid var(--line);
-}
+.ledger-row { border-bottom: 1px solid var(--line); }
 
+/* Liens */
 .link {
-  color: var(--ink);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: var(--line);
+  color: var(--cyan);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s ease, border-color 0.15s ease;
 }
 .link:hover {
-  text-decoration-color: var(--margin-red);
+  color: var(--cyan-soft);
+  border-bottom-color: rgba(61, 240, 228, 0.5);
 }
 
+/* Lignes de liste */
+.row-hover { transition: background-color 0.15s ease; }
+.row-hover:hover { background: rgba(130, 170, 255, 0.05); }
+
 :focus-visible {
-  outline: 2px solid var(--ink-blue);
+  outline: 2px solid var(--cyan);
   outline-offset: 2px;
 }
 
-/* Transitions */
-.btn-primary,
-.btn-ghost,
-.link,
-.field {
-  transition: background-color 0.15s ease, border-color 0.15s ease,
-    color 0.15s ease, text-decoration-color 0.15s ease;
-}
-
+/* ---- Animations ---- */
 @keyframes page-rise {
-  from { opacity: 0; transform: translateY(4px); }
+  from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
 }
-main > * {
-  animation: page-rise 0.22s ease-out;
-}
+main > * { animation: page-rise 0.24s ease-out; }
 
 @keyframes drawer-slide {
   from { transform: translateX(-100%); }
   to { transform: translateX(0); }
 }
-.drawer-panel {
-  animation: drawer-slide 0.22s ease-out;
-}
+.drawer-panel { animation: drawer-slide 0.22s ease-out; }
 
 @keyframes overlay-fade {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-.drawer-overlay {
-  animation: overlay-fade 0.2s ease-out;
-}
+.drawer-overlay { animation: overlay-fade 0.2s ease-out; }
 
 @media (prefers-reduced-motion: reduce) {
-  main > *,
-  .drawer-panel,
-  .drawer-overlay {
-    animation: none;
-  }
-  .btn-primary,
-  .btn-ghost,
-  .link,
-  .field {
-    transition: none;
-  }
+  main > *, .drawer-panel, .drawer-overlay { animation: none; }
+  .btn-primary, .btn-ghost, .link, .field, .select, .row-hover { transition: none; }
 }
