@@ -1,7 +1,6 @@
 'use client';
-import { useEffect, useState } from 'react';
-import { createBrowserSupabase } from '@/lib/supabase/client';
-import { useOrg } from '@/lib/useOrg';
+import { useEffect, useRef, useState } from 'react';
+import { getSettings, saveSettings, exportData, importData } from '@/lib/db';
 import type { SettingsRow } from '@/lib/types';
 
 const FIELDS: Array<{ key: keyof SettingsRow; label: string }> = [
@@ -17,32 +16,47 @@ const FIELDS: Array<{ key: keyof SettingsRow; label: string }> = [
 ];
 
 export default function SettingsPage() {
-  const { orgId } = useOrg();
   const [settings, setSettings] = useState<SettingsRow | null>(null);
   const [saved, setSaved] = useState(false);
-  const [inviteUrl, setInviteUrl] = useState('');
+  const fileInput = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (!orgId) return;
-    createBrowserSupabase().from('settings').select('*').eq('org_id', orgId).single()
-      .then(({ data }) => setSettings(data));
-  }, [orgId]);
+  useEffect(() => { setSettings(getSettings()); }, []);
 
   if (!settings) return <p className="text-sepia">Chargement…</p>;
 
-  async function save(e: React.FormEvent) {
+  function save(e: React.FormEvent) {
     e.preventDefault();
     if (!settings) return;
-    await createBrowserSupabase().from('settings')
-      .update(settings).eq('org_id', settings.org_id);
+    saveSettings(settings);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   }
 
-  async function invite() {
-    const { data } = await createBrowserSupabase()
-      .from('invitations').insert({ org_id: orgId }).select('token').single();
-    if (data) setInviteUrl(`${window.location.origin}/signup?invite=${data.token}`);
+  function downloadBackup() {
+    const blob = new Blob([exportData()], { type: 'application/json' });
+    const a = Object.assign(document.createElement('a'), {
+      href: URL.createObjectURL(blob),
+      download: `facturation-sauvegarde-${new Date().toISOString().slice(0, 10)}.json`,
+    });
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 0);
+  }
+
+  async function handleImport(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!confirm('Importer ce fichier remplacera toutes les données de cet appareil. Continuer ?')) {
+      e.target.value = '';
+      return;
+    }
+    try {
+      importData(await file.text());
+      alert('Données importées. La page va se recharger.');
+      window.location.reload();
+    } catch {
+      alert('Fichier invalide — import annulé.');
+      e.target.value = '';
+    }
   }
 
   return (
@@ -70,15 +84,16 @@ export default function SettingsPage() {
       </form>
 
       <div className="card mt-8 p-5">
-        <p className="eyebrow mb-3">Inviter un membre</p>
-        <button onClick={invite} className="btn-ghost">
-          Générer un lien d'invitation
-        </button>
-        {inviteUrl && (
-          <p className="amount mt-3 break-all border-l-2 border-l-margin bg-paper p-3 text-xs">
-            {inviteUrl}
-          </p>
-        )}
+        <p className="eyebrow mb-2">Sauvegarde des données</p>
+        <p className="mb-4 text-sm text-sepia">
+          Vos données sont stockées dans ce navigateur. Téléchargez une sauvegarde pour les
+          conserver ou les transférer sur un autre appareil.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <button onClick={downloadBackup} className="btn-primary">Télécharger une sauvegarde</button>
+          <button onClick={() => fileInput.current?.click()} className="btn-ghost">Importer une sauvegarde</button>
+          <input ref={fileInput} type="file" accept="application/json,.json" hidden onChange={handleImport} />
+        </div>
       </div>
     </div>
   );

@@ -307,13 +307,13 @@ function LayoutLaterale({ doc, lines, settings, t, totals }: LayoutProps) {
   const c = doc.client_snapshot;
   const s = StyleSheet.create({
     page: { padding: 0, flexDirection: 'row', fontSize: 10, fontFamily: 'Helvetica', backgroundColor: t.colors.page, color: t.colors.ink },
-    side: { width: '34%', backgroundColor: t.colors.accent, color: t.colors.bandText, paddingVertical: 44, paddingHorizontal: 24 },
-    sideTitle: { fontSize: 22, fontFamily: 'Helvetica-Bold', letterSpacing: 1 },
-    sideNum: { marginTop: 3, marginBottom: 32, fontSize: 11 },
+    side: { width: '34%', backgroundColor: t.colors.accent, color: t.colors.bandText, paddingVertical: 44, paddingHorizontal: 22 },
+    sideTitle: { fontSize: 17, fontFamily: 'Helvetica-Bold', letterSpacing: 1 },
+    sideNum: { marginTop: 3, marginBottom: 32, fontSize: 10 },
     sideLabel: { fontSize: 8, textTransform: 'uppercase', letterSpacing: 1.5, marginBottom: 5, marginTop: 22 },
     sideName: { fontFamily: 'Helvetica-Bold', marginBottom: 3, fontSize: 11 },
     sideLine: { marginBottom: 2, fontSize: 9 },
-    main: { flexGrow: 1, paddingVertical: 44, paddingHorizontal: 32 },
+    main: { width: '66%', paddingVertical: 44, paddingHorizontal: 30 },
     partyTitle: { fontSize: 8.5, textTransform: 'uppercase', letterSpacing: 1.5, color: t.colors.accent, marginBottom: 5, fontFamily: 'Helvetica-Bold' },
     strong: { fontFamily: 'Helvetica-Bold', marginBottom: 3 },
     line: { marginBottom: 2, color: t.colors.muted },

@@ -1,8 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
-import { createBrowserSupabase } from '@/lib/supabase/client';
+import { usePathname } from 'next/navigation';
 
 const NAV = [
   { href: '/', label: 'Tableau de bord' },
@@ -13,39 +12,24 @@ const NAV = [
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const isAuth = pathname.startsWith('/login') || pathname.startsWith('/signup');
 
   useEffect(() => {
     setMenuOpen(false);
   }, [pathname]);
 
-  if (isAuth) return <>{children}</>;
-
-  async function logout() {
-    await createBrowserSupabase().auth.signOut();
-    router.push('/login');
-    router.refresh();
-  }
+  const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
 
   const links = NAV.map((item) => (
     <Link key={item.href} href={item.href}
       className={`border-l-2 px-3 py-2 text-sm transition-colors ${
-        pathname === item.href
+        isActive(item.href)
           ? 'border-margin bg-white/10 font-semibold text-sheet'
           : 'border-transparent text-sheet/70 hover:bg-white/5 hover:text-sheet'
       }`}>
       {item.label}
     </Link>
   ));
-
-  const logoutButton = (
-    <button onClick={logout}
-      className="mt-auto border-l-2 border-transparent px-3 py-2 text-left text-sm text-sheet/60 hover:bg-white/5 hover:text-sheet">
-      Déconnexion
-    </button>
-  );
 
   return (
     <div className="min-h-screen md:flex">
@@ -56,14 +40,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           Registre des ventes
         </p>
         {links}
-        {logoutButton}
       </aside>
 
       {/* En-tête mobile avec menu ☰ */}
       <header className="sticky top-0 z-20 flex items-center justify-between bg-ledger px-4 py-3 md:hidden">
         <p className="font-display text-xl text-sheet">Facturation</p>
-        <button onClick={() => setMenuOpen(true)} aria-label="Ouvrir le menu"
-          className="p-1 text-sheet">
+        <button onClick={() => setMenuOpen(true)} aria-label="Ouvrir le menu" className="p-1 text-sheet">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             strokeWidth="2" strokeLinecap="round" aria-hidden="true">
             <line x1="3" y1="6" x2="21" y2="6" />
@@ -93,7 +75,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
               Registre des ventes
             </p>
             {links}
-            {logoutButton}
           </div>
         </div>
       )}

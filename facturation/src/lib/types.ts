@@ -5,7 +5,6 @@ export type DocumentStatus = 'brouillon' | 'envoyee' | 'payee' | 'impayee' | 'an
 
 export interface ClientRow {
   id: string;
-  org_id: string;
   company: string;
   company_id: string;          // SIRET / SIREN / EIN
   first_name: string;
@@ -19,7 +18,6 @@ export interface ClientRow {
 
 export interface DocumentRow {
   id: string;
-  org_id: string;
   type: DocumentType;
   numero: string | null;
   client_id: string | null;
@@ -49,7 +47,6 @@ export interface DocumentLineRow {
 }
 
 export interface SettingsRow {
-  org_id: string;
   company_name: string;
   company_id: string;          // SIRET / EIN
   address: string;

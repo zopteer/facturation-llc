@@ -1,49 +1,37 @@
 'use client';
 import { pdf } from '@react-pdf/renderer';
-import { createBrowserSupabase } from '@/lib/supabase/client';
+import { getSettings, listClients } from '@/lib/db';
 import { DocumentPdf } from './DocumentPdf';
-import type { ClientRow, DocumentLineRow, DocumentRow, SettingsRow } from '@/lib/types';
+import type { ClientRow, DocumentLineRow, DocumentRow } from '@/lib/types';
 
 export function PdfExportButton({ doc, lines }: { doc: DocumentRow; lines: DocumentLineRow[] }) {
   async function download() {
-    const supabase = createBrowserSupabase();
-    const { data: settings, error } = await supabase
-      .from('settings').select('*').eq('org_id', doc.org_id).single();
-    if (error || !settings) {
-      alert('Impossible de charger les réglages — PDF non généré.');
-      return;
-    }
+    const settings = getSettings();
 
-    // Complète les coordonnées manquantes du snapshot depuis le carnet de
-    // clients (ex. SIRET ajouté après la création du document). Les valeurs
-    // déjà figées dans le snapshot restent prioritaires.
+    // Complète les coordonnées manquantes du client depuis le carnet
+    // (ex. SIRET ajouté après la création du document).
     let docForPdf = doc;
     if (doc.client_id) {
-      const { data: client } = await supabase
-        .from('clients').select('*').eq('id', doc.client_id).maybeSingle();
+      const client = listClients().find((c) => c.id === doc.client_id);
       if (client) {
-        const snapshotFilled = Object.fromEntries(
+        const filled = Object.fromEntries(
           Object.entries(doc.client_snapshot ?? {}).filter(([, v]) => v !== '' && v != null),
         ) as Partial<ClientRow>;
-        docForPdf = { ...doc, client_snapshot: { ...client, ...snapshotFilled } };
+        docForPdf = { ...doc, client_snapshot: { ...client, ...filled } };
       }
     }
 
-    const blob = await pdf(
-      <DocumentPdf doc={docForPdf} lines={lines} settings={settings as SettingsRow} />,
-    ).toBlob();
+    const blob = await pdf(<DocumentPdf doc={docForPdf} lines={lines} settings={settings} />).toBlob();
     const label = doc.type === 'facture' ? 'Facture' : 'Devis';
     const a = Object.assign(document.createElement('a'), {
       href: URL.createObjectURL(blob),
       download: `${label}-${doc.numero ?? doc.issue_date}.pdf`,
     });
     a.click();
-    URL.revokeObjectURL(a.href);
+    setTimeout(() => URL.revokeObjectURL(a.href), 0);
   }
 
   return (
-    <button onClick={download} className="btn-primary">
-      Exporter en PDF
-    </button>
+    <button onClick={download} className="btn-primary">Exporter en PDF</button>
   );
 }

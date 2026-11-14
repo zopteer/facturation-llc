@@ -2,43 +2,40 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createBrowserSupabase } from '@/lib/supabase/client';
-import { useOrg } from '@/lib/useOrg';
-import { convertQuote, createDraft, duplicateDocument, sendDocument } from '@/lib/documents';
+import {
+  listDocuments, createDraft, updateDocument, deleteDocument,
+  sendDocument, convertQuote, duplicateDocument,
+} from '@/lib/db';
 import { STATUS_LABELS, documentName, formatDateFr, stampClass } from '@/lib/labels';
 import type { DocumentRow, DocumentStatus, DocumentType } from '@/lib/types';
 
 export default function DocumentsPage() {
-  const { orgId } = useOrg();
   const router = useRouter();
   const [docs, setDocs] = useState<DocumentRow[]>([]);
   const [typeFilter, setTypeFilter] = useState<'' | DocumentType>('');
   const [statusFilter, setStatusFilter] = useState<'' | DocumentStatus>('');
 
   const load = useCallback(() => {
-    if (!orgId) return;
-    let query = createBrowserSupabase().from('documents').select('*')
-      .eq('org_id', orgId).order('created_at', { ascending: false });
-    if (typeFilter) query = query.eq('type', typeFilter);
-    if (statusFilter) query = query.eq('status', statusFilter);
-    query.then(({ data }) => setDocs(data ?? []));
-  }, [orgId, typeFilter, statusFilter]);
+    let rows = listDocuments();
+    if (typeFilter) rows = rows.filter((d) => d.type === typeFilter);
+    if (statusFilter) rows = rows.filter((d) => d.status === statusFilter);
+    setDocs(rows);
+  }, [typeFilter, statusFilter]);
 
   useEffect(load, [load]);
 
-  async function newDoc(type: DocumentType) {
-    if (!orgId) return;
-    router.push(`/documents/${await createDraft(orgId, type)}`);
+  function newDoc(type: DocumentType) {
+    router.push(`/documents/edit?id=${createDraft(type)}`);
   }
 
-  async function setStatus(id: string, status: DocumentStatus) {
-    await createBrowserSupabase().from('documents').update({ status }).eq('id', id);
+  function setStatus(id: string, status: DocumentStatus) {
+    updateDocument(id, { status });
     load();
   }
 
-  async function remove(id: string) {
+  function remove(id: string) {
     if (!confirm('Supprimer ce brouillon ?')) return;
-    await createBrowserSupabase().from('documents').delete().eq('id', id).eq('status', 'brouillon');
+    deleteDocument(id);
     load();
   }
 
@@ -47,12 +44,8 @@ export default function DocumentsPage() {
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <h1 className="page-title mb-0 flex-1">Documents</h1>
         <div className="flex gap-2 pb-1">
-          <button onClick={() => newDoc('facture')} className="btn-primary">
-            + Facture
-          </button>
-          <button onClick={() => newDoc('devis')} className="btn-ghost">
-            + Devis
-          </button>
+          <button onClick={() => newDoc('facture')} className="btn-primary">+ Facture</button>
+          <button onClick={() => newDoc('devis')} className="btn-ghost">+ Devis</button>
         </div>
       </div>
 
@@ -74,7 +67,7 @@ export default function DocumentsPage() {
         {docs.map((d) => (
           <li key={d.id} className="row-hover flex flex-wrap items-start justify-between gap-x-4 gap-y-2 p-4">
             <span className="min-w-44 flex-1">
-              <Link href={`/documents/${d.id}`} className="link font-medium">
+              <Link href={`/documents/edit?id=${d.id}`} className="link font-medium">
                 {documentName(d)}
               </Link>
               <span className="mt-1 block text-sm text-sepia">
@@ -85,37 +78,28 @@ export default function DocumentsPage() {
             <span className="flex w-full flex-wrap gap-x-4 gap-y-1 text-sm sm:w-auto">
               {d.status === 'brouillon' && (
                 <>
-                  <button className="link"
-                    onClick={() => sendDocument(d.id).then(load).catch(() => alert('Échec de l\'envoi — réessayez.'))}>
+                  <button className="link" onClick={() => { sendDocument(d.id); load(); }}>
                     Marquer envoyée
                   </button>
                   <button className="link text-margin" onClick={() => remove(d.id)}>Supprimer</button>
                 </>
               )}
               {d.type === 'facture' && (d.status === 'envoyee' || d.status === 'impayee') && (
-                <button className="link" onClick={() => setStatus(d.id, 'payee')}>
-                  Marquer payée
-                </button>
+                <button className="link" onClick={() => setStatus(d.id, 'payee')}>Marquer payée</button>
               )}
               {d.type === 'facture' && d.status === 'envoyee' && (
-                <button className="link text-margin" onClick={() => setStatus(d.id, 'impayee')}>
-                  Marquer impayée
-                </button>
+                <button className="link text-margin" onClick={() => setStatus(d.id, 'impayee')}>Marquer impayée</button>
               )}
               {d.type === 'facture' && d.status !== 'brouillon' && d.status !== 'annulee' && (
-                <button className="link text-faded" onClick={() => setStatus(d.id, 'annulee')}>
-                  Annuler
-                </button>
+                <button className="link text-faded" onClick={() => setStatus(d.id, 'annulee')}>Annuler</button>
               )}
               {d.type === 'devis' && d.status !== 'brouillon' && (
-                <button className="link"
-                  onClick={async () => router.push(`/documents/${await convertQuote(d.id)}`)}>
+                <button className="link" onClick={() => router.push(`/documents/edit?id=${convertQuote(d.id)}`)}>
                   Convertir en facture
                 </button>
               )}
               {d.status !== 'brouillon' && (
-                <button className="link"
-                  onClick={async () => router.push(`/documents/${await duplicateDocument(d.id)}`)}>
+                <button className="link" onClick={() => router.push(`/documents/edit?id=${duplicateDocument(d.id)}`)}>
                   Dupliquer
                 </button>
               )}
