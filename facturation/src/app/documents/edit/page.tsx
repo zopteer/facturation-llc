@@ -143,14 +143,15 @@ function Editor() {
 
         <section className="card p-5">
           <h2 className="eyebrow mb-4">Produits</h2>
-          <div className="ledger">
-            <table className="w-full table-fixed text-sm">
+          {/* Desktop : tableau aligné */}
+          <div className="ledger hidden sm:block">
+            <table className="w-full text-sm">
               <thead>
-                <tr className="ledger-row text-left text-[9px] uppercase tracking-wider text-sepia">
-                  <th className="w-[34%] p-2 font-semibold">Désignation</th>
-                  <th className="w-[14%] p-2 font-semibold">Qté</th>
-                  <th className="w-[24%] p-2 font-semibold">PU HT</th>
-                  <th className="w-[28%] p-2 text-right font-semibold">Total</th>
+                <tr className="ledger-row text-left">
+                  <th className="eyebrow p-2 font-semibold">Désignation</th>
+                  <th className="eyebrow w-24 p-2 font-semibold">Quantité</th>
+                  <th className="eyebrow w-32 p-2 font-semibold">Prix unitaire HT</th>
+                  <th className="eyebrow w-28 p-2 text-right font-semibold">Total HT</th>
                 </tr>
               </thead>
               <tbody>
@@ -169,13 +170,34 @@ function Editor() {
                         value={l.unit_price_cents / 100}
                         onChange={(e) => patchLine(l.id, { unit_price_cents: Math.round(Number(e.target.value) * 100) })} />
                     </td>
-                    <td className="amount whitespace-nowrap p-2 text-right text-[11px] sm:text-sm">
+                    <td className="amount whitespace-nowrap p-2 text-right">
                       {formatCents(Math.round(Number(l.quantity) * l.unit_price_cents), doc.currency)}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile : lignes empilées compactes */}
+          <div className="ledger space-y-2 sm:hidden">
+            {lines.map((l) => (
+              <div key={l.id} className="rounded-lg border border-line bg-white/[0.02] p-3">
+                <input className="field" value={l.label} placeholder="Description du produit"
+                  onChange={(e) => patchLine(l.id, { label: e.target.value })} />
+                <div className="mt-2 flex items-center gap-2">
+                  <input type="number" min={0} aria-label="Quantité" className="field amount w-16" value={l.quantity}
+                    onChange={(e) => patchLine(l.id, { quantity: Number(e.target.value) })} />
+                  <span className="text-faded">×</span>
+                  <input type="number" min={0} step="0.01" aria-label="Prix unitaire HT" className="field amount w-24"
+                    value={l.unit_price_cents / 100}
+                    onChange={(e) => patchLine(l.id, { unit_price_cents: Math.round(Number(e.target.value) * 100) })} />
+                  <span className="amount ml-auto whitespace-nowrap font-semibold">
+                    {formatCents(Math.round(Number(l.quantity) * l.unit_price_cents), doc.currency)}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
           <button type="button" onClick={addLine} className="btn-ghost mt-3">+ Ajouter une ligne</button>
           <div className="mt-5 ml-auto w-60 space-y-1 text-sm">
