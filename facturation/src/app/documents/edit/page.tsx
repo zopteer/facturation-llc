@@ -147,10 +147,10 @@ function Editor() {
             <table className="w-full table-fixed text-sm">
               <thead>
                 <tr className="ledger-row text-left text-[9px] uppercase tracking-wider text-sepia">
-                  <th className="w-[40%] p-2 font-semibold">Désignation</th>
-                  <th className="w-[15%] p-2 font-semibold">Qté</th>
-                  <th className="w-[22%] p-2 font-semibold">PU HT</th>
-                  <th className="w-[23%] p-2 text-right font-semibold">Total</th>
+                  <th className="w-[34%] p-2 font-semibold">Désignation</th>
+                  <th className="w-[14%] p-2 font-semibold">Qté</th>
+                  <th className="w-[24%] p-2 font-semibold">PU HT</th>
+                  <th className="w-[28%] p-2 text-right font-semibold">Total</th>
                 </tr>
               </thead>
               <tbody>
@@ -169,7 +169,7 @@ function Editor() {
                         value={l.unit_price_cents / 100}
                         onChange={(e) => patchLine(l.id, { unit_price_cents: Math.round(Number(e.target.value) * 100) })} />
                     </td>
-                    <td className="amount overflow-hidden p-2 text-right text-[11px] sm:text-sm">
+                    <td className="amount whitespace-nowrap p-2 text-right text-[11px] sm:text-sm">
                       {formatCents(Math.round(Number(l.quantity) * l.unit_price_cents), doc.currency)}
                     </td>
                   </tr>
