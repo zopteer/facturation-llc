@@ -4,7 +4,9 @@ import { getSettings, listClients } from '@/lib/db';
 import { DocumentPdf } from './DocumentPdf';
 import type { ClientRow, DocumentLineRow, DocumentRow } from '@/lib/types';
 
-export function PdfExportButton({ doc, lines }: { doc: DocumentRow; lines: DocumentLineRow[] }) {
+export function PdfExportButton({ doc, lines, label = 'Exporter en PDF', className = 'btn-primary' }: {
+  doc: DocumentRow; lines: DocumentLineRow[]; label?: string; className?: string;
+}) {
   async function download() {
     const settings = getSettings();
 
@@ -32,6 +34,6 @@ export function PdfExportButton({ doc, lines }: { doc: DocumentRow; lines: Docum
   }
 
   return (
-    <button onClick={download} className="btn-primary">Exporter en PDF</button>
+    <button onClick={download} className={className}>{label}</button>
   );
 }

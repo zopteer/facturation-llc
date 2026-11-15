@@ -276,6 +276,13 @@ body::after {
   outline-offset: 2px;
 }
 
+/* Pulsation magenta du total quand il change */
+@keyframes total-pulse {
+  0% { color: var(--magenta); text-shadow: 0 0 20px rgba(255, 93, 162, 0.85); }
+  100% { color: var(--text); text-shadow: 0 0 0 rgba(255, 93, 162, 0); }
+}
+.total-pulse { animation: total-pulse 0.65s ease-out; }
+
 /* ---- Animations ---- */
 @keyframes page-rise {
   from { opacity: 0; transform: translateY(6px); }
@@ -296,6 +303,6 @@ main > * { animation: page-rise 0.24s ease-out; }
 .drawer-overlay { animation: overlay-fade 0.2s ease-out; }
 
 @media (prefers-reduced-motion: reduce) {
-  main > *, .drawer-panel, .drawer-overlay { animation: none; }
+  main > *, .drawer-panel, .drawer-overlay, .total-pulse { animation: none; }
   .btn-primary, .btn-ghost, .link, .field, .select, .row-hover { transition: none; }
 }

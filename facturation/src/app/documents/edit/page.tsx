@@ -63,7 +63,7 @@ function Editor() {
         <h1 className="font-display text-3xl">{documentName(doc)}</h1>
         <div className="flex items-center gap-4">
           <span className="text-sm text-sepia">Enregistré</span>
-          <PdfExportButton doc={doc} lines={lines} />
+          <PdfExportButton doc={doc} lines={lines} className="btn-primary hidden sm:inline-flex" />
         </div>
       </div>
       {readOnly && (
@@ -203,7 +203,7 @@ function Editor() {
           <div className="mt-5 ml-auto w-60 space-y-1 text-sm">
             <p className="flex justify-between text-sepia"><span>Total HT</span><span className="amount">{formatCents(totals.totalHTCents, doc.currency)}</span></p>
             <p className="flex justify-between text-sepia"><span>Total TVA</span><span className="amount">{formatCents(totals.totalTVACents, doc.currency)}</span></p>
-            <p className="ledger-row flex justify-between pb-1 font-semibold"><span>Total TTC</span><span className="amount">{formatCents(totals.totalTTCCents, doc.currency)}</span></p>
+            <p className="ledger-row flex justify-between pb-1 font-semibold"><span>Total TTC</span><span key={totals.totalTTCCents} className="total-pulse amount">{formatCents(totals.totalTTCCents, doc.currency)}</span></p>
           </div>
         </section>
 
@@ -229,15 +229,20 @@ function Editor() {
       {/* Récapitulatif du total, collé en bas (mobile) */}
       <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-rail/95 px-4 py-3 backdrop-blur sm:hidden"
         style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}>
-        <div className="flex items-end justify-between">
-          <p className="text-xs text-sepia">
-            HT <span className="amount text-sheet">{formatCents(totals.totalHTCents, doc.currency)}</span>
-            {'  ·  TVA '}<span className="amount text-sheet">{formatCents(totals.totalTVACents, doc.currency)}</span>
-          </p>
-          <p className="text-right">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
             <span className="eyebrow block">Total TTC</span>
-            <span className="amount text-lg font-semibold text-sheet">{formatCents(totals.totalTTCCents, doc.currency)}</span>
-          </p>
+            <span className="flex items-baseline gap-2">
+              <span key={totals.totalTTCCents} className="total-pulse amount text-lg font-semibold text-sheet">
+                {formatCents(totals.totalTTCCents, doc.currency)}
+              </span>
+              <span className="truncate text-[11px] text-sepia">
+                HT {formatCents(totals.totalHTCents, doc.currency)} · TVA {formatCents(totals.totalTVACents, doc.currency)}
+              </span>
+            </span>
+          </div>
+          <PdfExportButton doc={doc} lines={lines} label="PDF"
+            className="btn-primary shrink-0 px-5 py-2.5" />
         </div>
       </div>
     </div>
