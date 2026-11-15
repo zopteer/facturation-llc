@@ -111,16 +111,28 @@ export default function DocumentsPage() {
         )}
       </ul>
 
-      {/* Bouton flottant mobile */}
-      <button onClick={() => newDoc('facture')} aria-label="Nouvelle facture"
-        className="btn-primary fixed right-5 z-30 flex items-center gap-1.5 px-5 py-3 shadow-xl sm:hidden"
-        style={{ bottom: 'calc(1.25rem + env(safe-area-inset-bottom))', borderRadius: 999 }}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
-          <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-        </svg>
-        Facture
-      </button>
+      {/* Boutons flottants mobile */}
+      <div className="fixed right-5 z-30 flex items-center gap-2 sm:hidden"
+        style={{ bottom: 'calc(1.25rem + env(safe-area-inset-bottom))' }}>
+        <button onClick={() => newDoc('devis')} aria-label="Nouveau devis"
+          className="btn-ghost flex items-center gap-1.5 px-4 py-3 shadow-xl backdrop-blur"
+          style={{ borderRadius: 999, background: 'rgba(14,20,36,0.9)' }}>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Devis
+        </button>
+        <button onClick={() => newDoc('facture')} aria-label="Nouvelle facture"
+          className="btn-primary flex items-center gap-1.5 px-5 py-3 shadow-xl"
+          style={{ borderRadius: 999 }}>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          Facture
+        </button>
+      </div>
     </div>
   );
 }

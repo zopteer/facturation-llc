@@ -58,7 +58,7 @@ function Editor() {
   );
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-4xl space-y-6 pb-24 sm:pb-0">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="font-display text-3xl">{documentName(doc)}</h1>
         <div className="flex items-center gap-4">
@@ -225,6 +225,21 @@ function Editor() {
           </label>
         </section>
       </fieldset>
+
+      {/* Récapitulatif du total, collé en bas (mobile) */}
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-line bg-rail/95 px-4 py-3 backdrop-blur sm:hidden"
+        style={{ paddingBottom: 'calc(0.75rem + env(safe-area-inset-bottom))' }}>
+        <div className="flex items-end justify-between">
+          <p className="text-xs text-sepia">
+            HT <span className="amount text-sheet">{formatCents(totals.totalHTCents, doc.currency)}</span>
+            {'  ·  TVA '}<span className="amount text-sheet">{formatCents(totals.totalTVACents, doc.currency)}</span>
+          </p>
+          <p className="text-right">
+            <span className="eyebrow block">Total TTC</span>
+            <span className="amount text-lg font-semibold text-sheet">{formatCents(totals.totalTTCCents, doc.currency)}</span>
+          </p>
+        </div>
+      </div>
     </div>
   );
 }
